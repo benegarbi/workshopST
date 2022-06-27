@@ -1,1 +1,2 @@
-# workshopST
+# Statistique textuelle
+*B. Garnier*
