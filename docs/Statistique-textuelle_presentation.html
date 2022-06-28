@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Stat textuelle avec R</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Bénédicte Garnier" />
+    <meta name="author" content="Service Méthodes Statistiques" />
+    <script src="site_libs/header-attrs/header-attrs.js"></script>
+    <link rel="stylesheet" href="xaringan-themer.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+.title[
+# Stat textuelle avec R
+]
+.subtitle[
+## <img src="images/LOGO_ined1c.png" />
+]
+.author[
+### Bénédicte Garnier
+]
+.author[
+### Service Méthodes Statistiques
+]
+.date[
+### Juin 2022
+]
+
+---
+
+
+
+
+
+
+# Support en cours de rédaction
+
+---
+
+
+## Sommaire
+
+- Méthodes d'analyse de textes, historique, contexte
+- Les données textuelles, données plus ou moins structurées
+- Traitement des textes : lemmatisation, création de tableaux lexicaux
+- Exploration et visualisation : nuages de mots, graphes de mots, plans factoriels
+- Interpréter les résultats : bilan lexical, concordances, vocabulaire spécifique, analyses factorielles
+  
+
+---
+
+
+## Ressources
+
+- Manuel Pratique : Garnier Bénédicte, Guérin-Pace France. 2010. Appliquer les méthodes de la statistique textuelle, Paris, CEPED, 86 p. (Les Clefs pour) : &lt;http://www.ceped.org/fr/publications-ressources/editions-du-ceped-1988-2011/les-clefs-pour/article/appliquer-les-methodes-de-la&gt;
+- Articles (cf bibliographie)
+    dont la mise en œuvre de l’analyse des mots associés à « Europe » (EuroBroadMap) 
+- Garnier, B. 2018, Pas à Pas R.temis avec Rstudio &lt;http://rtemis.hypotheses.org/r-temis-dans-rstudio&gt;
+- Scripts et données exemples
+- Support de cette présentation
+
+---
+
+## Enjeux et objectifs de la statistique (textuelle)
+
+- **Structurer** : du corpus à la base de données
+- **Nettoyer** les textes (données)
+- **Explorer** : *faire naître des idées*, détecter des similitudes, des différences, des anomalies, ….
+- **Résumer** les données, les ordonner, trouver une structure, extraire des informations
+- **Présenter** des résultats : A qui ? comment ?
+
+&lt;center&gt;&lt;img src="images/im_nuage_couverture.png" height="250px" /&gt;&lt;/center&gt;  
+
+---
+
+## Des exemples de corpus textuels
+
+**Enquêtes**
+
+ - Réponses à des questionnaires
+ 
+**Pages Web**
+ 
+ - Flux d'informations (RSS), Champs (Xpath) 
+
+**Textes politiques**
+
+ - Discours, textes de lois, ...
+ 
+**Articles**
+
+ - Titres, mots-clés, résumés, texte
+
+
+---
+
+# Méthodes d'analyse de textes
+
+---
+
+## Analyse qualitative
+
+Organiser ses données et post coder à partir de thèmes prédéfinis ou définis au fur et à mesure de la (des) lectures des corpus.
+Fenêtre d’annotation, comparable à un traitement de texte 
+
+- pour surligner en couleur des passages et y attacher une annotation (-&gt;collection) 
+- permet de repérer des parties thématiques et faire des extractions sélectives 
+
+outils d’assistance à la création de catégories par le chercheur (analyse) mais sans automatisation
+= **CAQDAS** : Computer Assisted Qualitative Data Analysis Software
+répandus, chers : NVivo ou ATLAS.ti &lt;http://mate-shs.cnrs.fr/?Tuto02_atlas-ti-et-nvivo&gt;
+libre : package de R, RQDA
+
+Autre outil réflexif « gratuit » : **Sonal**
+
+---
+
+## Les concordanciers
+ 
+&lt;center&gt;&lt;img src="images/im_concordancier_lexico3.png" height="500px" /&gt;&lt;/center&gt;
+
+---
+
+## Analyse quantitative de données qualitatives 
+
+- Comparer de **corpus** sur la base d’une *étude quantitative* du vocabulaire - Analyse des **occurrences**
+
+= s’intéresser à la forme des textes en faisant abstraction de leur contenu
+Ex  : Attributions d’écrits historiques ou littéraires à un auteur, comparaison et évolution du style de différents auteurs, etc. 
+
+- Faire *émerger le contenu* de textes au-delà de leur forme, 
+Ex  : Analyse des réponses à une question ouverte, d’entretiens, de discours, etc.
+
+Trouver des « structures », des thèmes, identifier des verbatims - Analyse des **cooccurrences**
+
+
+
+S’appuyer sur des *métadonnées* sur les textes
+
+---
+
+## Statistique textuelle
+
+Pour faire émerger des thématiques au moyen de méthodes statistiques d’analyses multivariées (AFC, CDH) **sans a priori**
+
+Logiciels de statistique textuelle « historiques » (Spad, Lexico, Alceste, Hyperbase) aujourd’hui outil écrits à partir de R (tm, R.temis, Quanteda ou IRaMuteQ, ….)
+
+Les méthodes d'analyse textuelle peuvent s'appliquer à des corpus qui diffèrent par leur nature mais qui sont codés dans des tableaux statistiques de même structure : les **tableaux lexicaux**
+
+---
+
+## Les logiciels d'analyse de matériau qualitatif 
+
+&lt;center&gt;&lt;img src="images/im_logiciels_lejeune.png" height="500px" /&gt;&lt;/center&gt;  
+
+---
+
+## Text Mining
+
+
+&lt;center&gt;&lt;img src="images/im_ricco.png" height="500px" /&gt;&lt;/center&gt;  
+
+---
+
+## Topic Model 
+
+Modèle probabiliste permettant de déterminer des sujets ou thèmes dans un document (apprentissage automatique - traitement automatique du langage naturel (TLN))
+
+&lt;center&gt;&lt;img src="images/im_topic_modeling.png" height="400px" /&gt;&lt;/center&gt;  
+
+
+---
+
+## Chaîne de traitement de textes
+
+&lt;center&gt;&lt;img src="images/im_flochart_text_analysis.png" height="400px" /&gt;&lt;/center&gt;  
+&lt;http://www.tidytextmining.com/topicmodeling.html&gt;
+
+---
+
+## L'Analyse des Données
+
+&lt;center&gt;&lt;img src="images/im_benzecri.png" height="500px" /&gt;&lt;/center&gt;  
+
+---
+
+## Usage croissant de la statistique textuelle 
+
+&lt;center&gt;&lt;img src="images/im_chronologie.png" height="500px" /&gt;&lt;/center&gt; 
+
+---
+
+## Rappels
+
+**Corpus**
+Statistique textuelle - Text Mining
+Chiffres &amp; Mots / Quanti &amp; Quali
+
+Calculs statistiques appliqués à des corpus de textes
+**occurrences**, **cooccurrences**, …
+
+Calcul de spécificités, recherche de profils,
+Analyse des correspondances, Classification 
+
+Visualisations : nuages de mots, graphe de mots, plan factoriels, dendrogrammes 
+
+Aides à l'interprétation - **concordances** 
+
+---
+
+# Corpus et problématiques
+
+---
+
+## Statistique textuelle : les données
+
+Pour répondre à une problématique
+*quels sont les textes les plus semblables en ce qui concerne le vocabulaire et la fréquence des formes utilisées ? Quelles sont les formes qui caractérisent chaque texte, par leur présence ou leur absence ? *»* (Lebart &amp; Salem, 1994, p.135) 
+
+Collecter Corpus et métadonnées 
+
+Les questionner, les contextualiser - disponibilités/droits, sources, …
+
+---
+
+## Nettoyer les données
+
+= Etape de l’analyse
+Pré-traiter les textes et metadata  = nettoyer, normaliser
+
+Diffère selon les types de corpus (questions ouvertes, entretiens, romans, articles, pages Web etc..) ;
+
+Corrections : encodage, orthographe, abreviations … 
+
+---
+
+## Réponses à une question ouverte
+
+&lt;center&gt;&lt;img src="images/im_pee.png" height="500px" /&gt;&lt;/center&gt; 
+
+plus de 4700 réponses
+---
+
+## Identifier des univers lexicaux
+
+&lt;center&gt;&lt;img src="images/im_plan_pee.png" height="500px" /&gt;&lt;/center&gt; 
+
+---
+
+## Entretiens 
+
+&lt;center&gt;&lt;img src="images/im_p&amp;p.png" height="500px" /&gt;&lt;/center&gt; 
+
+---
+
+## Mettre en évidence de grands axes d’interprétations 
+
+&lt;center&gt;&lt;img src="images/im_dendro_pp.png" height="500px" /&gt;&lt;/center&gt; 
+
+---
+
+## Aide à l’interprétation  : spécificités
+
+&lt;center&gt;&lt;img src="images/im_classe_pp.png" height="500px" /&gt;&lt;/center&gt; 
+
+---
+
+## Corpus d'articles
+
+&lt;center&gt;&lt;img src="images/im_articles_ricco.png" height="500px" /&gt;&lt;/center&gt;
+
+---
+
+## Nouvelles donnnées
+
+Encore plus de données (nouvelles ou anciennes)
+
+- Nouveaux contenus (tweets, pages web) 
+- Nouveaux langages - 2 exemples
+ 
+créés par les internautes : les SMS 
+ou conçus par des créateurs du Web sémantique : émoticônes
+
+Données Structurées ?
+
+
+---
+
+## Données du web
+
+Création, acquisition, stockage et partage de documents numériques de plus en plus simple et facile
+
+Se poser des questions, par rapport à l’usage qu’on veut faire
+
+Peu couteuses (*gratuites*) ?
+
+A-t-on le droit de les utiliser ?
+
+data cleanning = Travail *à ne pas sous estimer*
+
+---
+
+## Structurer les textes pour appliquer la statistique textuelle
+
+Données usuellement exploitées en statistique : tableaux *individus* X variables (attributs)
+
+Nécessité de transformer les textes (corpus) en tableaux sans (trop) perdre d’informations
+
+Transformation des données textuelles **tableaux lexicaux** ( avec les logiciels)  
+
+&lt;center&gt;&lt;img src="images/im_TLE.png" height="250px" /&gt;&lt;/center&gt;
+
+---
+
+## Les outils
+
+Liste non exhaustive
+&lt;center&gt;&lt;img src="images/im_outils.png" height="400px" /&gt;&lt;/center&gt;
+
+---
+
+## Rappel sur les opérations
+
+Et aussi affiner l’analyse
+Extraire des sous-corpus
+Personnaliser  la lemmatisation …..
+
+
+&lt;center&gt;&lt;img src="images/im_rappel_methodes.png" height="500px" /&gt;&lt;/center&gt;
+
+---
+
+## Rappel sur l’opération de « lemmatisation »
+
+**Lemmatisation** = rattacher un ou plusieurs mots à une forme dite racine (Lebart, Salem, 1994)
+
+Convertir : 
+
+- les formes verbales à l’infinitif
+- les substantifs au singulier
+- les adjectifs au masculin singulier
+
+Stemmatiser : Ne conserver que le radical des mots, pour regrouper sous le même radical tous les mots d'une famille
+
+On peut intervenir sur la lemmatisation avec R.temis, voire l’enrichir et supprimer des mots selon leur catégorie grammaticale au moyen de lexiques.
+Permet de choisir les mots à afficher sur les sorties
+
+---
+
+## Conclusion 
+
+- Statistique textuelle à l’honneur 
+- Analyse de données (non structurées)
+- Explorer les données autrement  - sans a priori 
+- Complémentarité des méthodes (qualitative/quantitative) 
+- Exploration ultra-rapide des corpus mais pré connaissance du corpus irremplaçable pour faire des choix de paramétrage et interpréter les résultats produits
+- Utilisation conjointe de l'informatique tout-automatique et de l'intuition humaine
+- Savoir Présenter les résultats à un public non averti (éviter l’effet boite noire)
+- Connaissance en informatique - Encodage/ formats de fichiers
+- Pratique de logiciels et évolution (ex. packages R), Python, ….
+
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"slideNumberFormat": "%current%",
+"highlightStyle": "github",
+"highlightLines": true,
+"ratio": "16:9",
+"countIncrementalSlides": true,
+"header-includes": ["\\usepackage{titling}", "\\pretitle{\\begin{center} \\includegraphics[width=2in,height=2in]{![](images/LOGO_ined2.png)}\\LARGE\\\\}", "\\posttitle{\\end{center}}"]
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// add `data-at-shortcutkeys` attribute to <body> to resolve conflicts with JAWS
+// screen reader (see PR #262)
+(function(d) {
+  let res = {};
+  d.querySelectorAll('.remark-help-content table tr').forEach(tr => {
+    const t = tr.querySelector('td:nth-child(2)').innerText;
+    tr.querySelectorAll('td:first-child .key').forEach(key => {
+      const k = key.innerText;
+      if (/^[a-z]$/.test(k)) res[k] = t;  // must be a single letter (key)
+    });
+  });
+  d.body.setAttribute('data-at-shortcutkeys', JSON.stringify(res));
+})(document);
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
