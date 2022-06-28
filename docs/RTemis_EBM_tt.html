@@ -1,0 +1,992 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="B. Garnier (Ined)" />
+
+
+<title>Explorer des textes courts avec R.temis</title>
+
+<script src="site_libs/header-attrs-2.14/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cerulean.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/htmlwidgets-1.5.4/htmlwidgets.js"></script>
+<script src="site_libs/scatterD3-binding-1.0.1/scatterD3.js"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+
+
+<style type="text/css">
+  code {
+    white-space: pre;
+  }
+  .sourceCode {
+    overflow: visible;
+  }
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; } /* Alert */
+code span.an { color: #008000; } /* Annotation */
+code span.at { } /* Attribute */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #0000ff; } /* ControlFlow */
+code span.ch { color: #008080; } /* Char */
+code span.cn { } /* Constant */
+code span.co { color: #008000; } /* Comment */
+code span.cv { color: #008000; } /* CommentVar */
+code span.do { color: #008000; } /* Documentation */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.im { } /* Import */
+code span.in { color: #008000; } /* Information */
+code span.kw { color: #0000ff; } /* Keyword */
+code span.op { } /* Operator */
+code span.ot { color: #ff4000; } /* Other */
+code span.pp { color: #ff4000; } /* Preprocessor */
+code span.sc { color: #008080; } /* SpecialChar */
+code span.ss { color: #008080; } /* SpecialString */
+code span.st { color: #008080; } /* String */
+code span.va { } /* Variable */
+code span.vs { color: #008080; } /* VerbatimString */
+code span.wa { color: #008000; font-weight: bold; } /* Warning */
+
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    for (var j = 0; j < rules.length; j++) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') continue;
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.tab('show');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-inverse  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Initiation à la statistique textuelle</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Intro</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Supports
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="Statistique_textuelle_presentation.html">Présentation générale</a>
+    </li>
+    <li>
+      <a href="RTemis_EBM_tt.html">Pas-à-pas sur textes courts</a>
+    </li>
+    <li>
+      <a href="Rtemis_Voeux_fromGiscard.html">Pas-à-pas sur textes longs</a>
+    </li>
+  </ul>
+</li>
+<li>
+  <a href="Exercices_enonces.html">Exercices</a>
+</li>
+<li>
+  <a href="biblio.html">Ressources</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Explorer des textes courts avec R.temis</h1>
+<h4 class="author">B. Garnier (Ined)</h4>
+<h4 class="date">juin 2022</h4>
+
+</div>
+
+
+<div id="corpus-eurobroadmap" class="section level1">
+<h1>Corpus “EuroBroadMap”</h1>
+<p>Extrait de l’enquête « EuroBroadMap » financée par le 7ème programme cadre de recherche et développent de la commission européenne (FP7/2007-2013 ; grant agreement n° 225260 ; “Visions de l’Europe dans le monde”, www.eurobroadmap.eu)” .</p>
+<p>Question ouverte sous forme de <em>mots associés</em> posée en complément à l’interprétation d’une question en cartographie “Draw your limit of Europe”. Quesls ont les mots que vous associés le plus à “Europe”. Choississez 5 mots au maximum.</p>
+<center>
+<img src="images/im_QO_EBM.png" height="300px" />
+</center>
+<div id="contexte" class="section level2">
+<h2>Contexte</h2>
+<p>Questionnnaire posé dans la langue du pays et réponses traduites en aanglais et saisies par chaque équipe partenaire du projet. 9340 étudiants intéerrogés dans 18 pays et 43 villes. - France, Belgique, Portugal, Roumanie, Hongrie, Malte Suède - Moldavie, Russie, Turquie, Tunisie - Cameroun, Chine, Inde, Brésil, Azebaïdjan, Egypte</p>
+<center>
+<img src="images/im_carte_EBM.png" height="400px" />
+</center>
+</div>
+<div id="données-utilisées-les-mots-associés" class="section level2">
+<h2>Données utilisées: les mots associés</h2>
+<p>Le <em>corpus</em> utilisé dans cet exemple contient <strong>8143 reponses a la QO </strong> mots associés à Europe. Les textes,variable <em>textuelle</em>, sont composés de quelques mots (textes courts) et sont associés à des <em>métadonnées</em>. G_State (pays d’enquête) G_City (ville d’enquête) G_Study (Domaine d’étude des enquêtés) A1_Gender (genre) A10_LevInc (niveau de revenu) A11_LevEdu_f (niveau d’éducation du père) A12_LevEdu_m (niveau d’éducation de la mère) PaysVis (nombre de pays visités) Nblang (nombre de langues parlées) VecuEtranger (a vécu à l’étranger)</p>
+<p>Voir également Brennetot A., Emsellem K., Guérin-Pace F., Garnier B. 2013. <em>Dire l’Europe à travers le monde.Les mots des étudiants dans l’enquête EuroBroadMap</em>, Cybergéo <a href="http://cybergeo.revues.org/25684" class="uri">http://cybergeo.revues.org/25684</a></p>
+</div>
+<div id="extrait-du-fichier" class="section level2">
+<h2>Extrait du fichier</h2>
+<center>
+<img src="images/im_data_EBM.png" height="300px" />
+</center>
+<p>Les mots cités par les répondants ont étés concaténés pour former un <em>texte court</em> (de 1 à 5 mots). 8443 étudiants sur les 9343 interrogés ont cité au moins un mot L’ensemble des textes correspondants aux réponses correspond à 40 873 mots dont 4 977 mots distincts/différents</p>
+</div>
+</div>
+<div id="paquets-nécessaires" class="section level1">
+<h1>Paquets nécessaires</h1>
+<p>Nous utilisons <strong>R.temis</strong> dont le principe est de faciliter les étapes essentielles de l’analyse textuelle (importation du corpus et métadonnées, nettoyage et analyses) en s’appuyant au maximum sur les packages existants (tm, FactoMineR, explor, igraph, Shiny..).</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(R.temis)</span></code></pre></div>
+<pre><code>## Warning: le package &#39;R.temis&#39; a été compilé avec la version R 4.1.3</code></pre>
+<pre><code>## Warning: le package &#39;tm&#39; a été compilé avec la version R 4.1.3</code></pre>
+<pre><code>## Warning: le package &#39;FactoMineR&#39; a été compilé avec la version R 4.1.3</code></pre>
+<pre><code>## Warning: le package &#39;explor&#39; a été compilé avec la version R 4.1.3</code></pre>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span></code></pre></div>
+<pre><code>## Warning: le package &#39;dplyr&#39; a été compilé avec la version R 4.1.3</code></pre>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(questionr)</span></code></pre></div>
+<pre><code>## Warning: le package &#39;questionr&#39; a été compilé avec la version R 4.1.3</code></pre>
+</div>
+<div id="importation-du-corpus" class="section level1">
+<h1>Importation du corpus</h1>
+<p>Le corpus et les métadonnées (variables qualitatives) sont dans un “tableau” ; la <em>variable textuelle</em> est en 14e colonne.</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co">#corpus &lt;- import_corpus(&quot;EBM_iram.txt&quot;, format=&quot;alceste&quot;, language=&quot;en&quot;)</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>corpus <span class="ot">&lt;-</span> <span class="fu">import_corpus</span>(<span class="st">&quot;Data/EBM_temis_BG_tot_sansAZEGSW2.csv&quot;</span>,<span class="at">format=</span><span class="st">&quot;csv&quot;</span>,<span class="at">textcolumn=</span><span class="dv">14</span>, <span class="at">language=</span><span class="st">&quot;en&quot;</span>)</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>corpus</span></code></pre></div>
+<pre><code>## &lt;&lt;VCorpus&gt;&gt;
+## Metadata:  corpus specific: 1, document level (indexed): 13
+## Content:  documents: 8143</code></pre>
+<p>Le corpus est <em>court</em>, il ne sera pas découpé.</p>
+</div>
+<div id="création-du-lexique" class="section level1">
+<h1>Création du lexique</h1>
+<div id="premier-tableau-lexical" class="section level2">
+<h2>Premier tableau lexical</h2>
+<div id="lexique-sans-mots-outils-ni-chiffres" class="section level3">
+<h3>1 : Lexique sans mots outils ni chiffres</h3>
+<p>Affichage d’un extrait du <em>tableau lexical entier</em> (TLE) ou <em>DocumentTermMatrix</em> (DTM), essentiellement rempli de 0.</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co">#stopwords(&quot;en&quot;)</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>dtm <span class="ot">&lt;-</span> <span class="fu">build_dtm</span>(corpus, <span class="at">remove_stopwords =</span> T, <span class="at">remove_numbers =</span> T)</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="co">#dtm &lt;- build_dtm(corpus, remove_stopwords = F, remove_numbers = F)</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>dtm</span></code></pre></div>
+<pre><code>## &lt;&lt;DocumentTermMatrix (documents: 8143, terms: 4765)&gt;&gt;
+## Non-/sparse entries: 36161/38765234
+## Sparsity           : 100%
+## Maximal term length: 22
+## Weighting          : term frequency (tf)</code></pre>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">inspect</span>(dtm)</span></code></pre></div>
+<pre><code>## &lt;&lt;DocumentTermMatrix (documents: 8143, terms: 4765)&gt;&gt;
+## Non-/sparse entries: 36161/38765234
+## Sparsity           : 100%
+## Maximal term length: 22
+## Weighting          : term frequency (tf)
+## Sample             :
+##        Terms
+## Docs    continent culture developed development euro european freedom history
+##   X1761         5       0         0           0    0        0       0       0
+##   X2579         0       0         0           0    0        0       0       0
+##   X3769         0       0         0           0    0        2       1       0
+##   X4631         0       0         1           0    0        0       0       0
+##   X5079         0       0         0           0    0        0       0       0
+##   X5893         0       0         0           0    0        0       0       0
+##   X5912         0       0         0           0    0        0       0       0
+##   X7087         0       0         0           0    0        0       0       0
+##   X7813         1       0         0           0    0        0       0       0
+##   X7897         0       0         0           0    0        0       0       0
+##        Terms
+## Docs    rich union
+##   X1761    0     0
+##   X2579    0     3
+##   X3769    0     1
+##   X4631    0     0
+##   X5079    0     1
+##   X5893    0     0
+##   X5912    0     0
+##   X7087    0     0
+##   X7813    1     0
+##   X7897    0     0</code></pre>
+<p>Les lignes du <em>tableau lexical</em> (dtm) correspondent ici aux 8143 reponses et les colonnes aux 4765 mots différents utilisés par les étudiants.</p>
+<p>On crée un premier <em>lexique</em> (dictionnaire) : ensemble des mots distincts du corpus</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>dictemis <span class="ot">&lt;-</span> <span class="fu">dictionary</span>(dtm)</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(dictemis)</span></code></pre></div>
+<pre><code>##             Term Occurrences Stopword
+## abduction abduct           1         
+## aberrant   aberr           1         
+## abide       abid           1         
+## abiding     abid           1         
+## abroad    abroad           2         
+## absence   absenc           1</code></pre>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co">#View(dictemis)</span></span></code></pre></div>
+<p>Via le commande <code>View</code> La lecture <em>interactive</em> du lexique par ordre de fréquences permet de repérer le registre du vocabulaire et en particulier les mots les plus fréquemment utilisés. La lecture par ordre alphabétique) permet de rechercher un terme précis et observer sa fréquence d’apparition ou trouver les mots mal orthographiés ou abréviés en vue de les corriger(si besoin).</p>
+</div>
+<div id="mots-les-plus-fréquents" class="section level3">
+<h3>2 : Mots les plus fréquents</h3>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">frequent_terms</span>(dtm)</span></code></pre></div>
+<pre><code>##              Global occ.  Global %
+## union               1125 3.0701635
+## developed            975 2.6608083
+## culture              868 2.3688017
+## development          866 2.3633436
+## european             643 1.7547690
+## euro                 593 1.6183173
+## rich                 575 1.5691947
+## freedom              430 1.1734847
+## history              421 1.1489234
+## continent            376 1.0261169
+## old                  362 0.9879104
+## countries            354 0.9660781
+## democracy            352 0.9606200
+## beautiful            346 0.9442458
+## world                344 0.9387878
+## power                330 0.9005813
+## civilization         313 0.8541877
+## high                 298 0.8132522
+## racism               270 0.7368392
+## technology           265 0.7231941
+## wealth               259 0.7068199
+## diversity            252 0.6877166
+## economy              248 0.6768005
+## education            234 0.6385940
+## romantic             208 0.5676391</code></pre>
+<p>On peut représenter cette distribution par un nuage de mots; La taille de la police utilié pour afficher chaque mot dépend de son occurrence. Plus le mot est cité dans les réponses, plus sa taille est grande. Ajouter une note de lecture !</p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>cloud<span class="ot">&lt;-</span><span class="fu">word_cloud</span>(dtm, <span class="at">color=</span><span class="st">&quot;red&quot;</span>, <span class="at">n=</span><span class="dv">60</span>, <span class="at">min.freq=</span><span class="dv">10</span>)</span></code></pre></div>
+<p><img src="RTemis_EBM_tt_files/figure-html/nuage-1.png" width="672" /> On choisira qqs mots pour écrire la légende</p>
+</div>
+<div id="lecture-de-concordances" class="section level3">
+<h3>3 : Lecture de concordances</h3>
+<p>Les <em>concordances</em> permettent, pour un mot choisit, de rassembler l’ensemble des unités de textes (ou documents) dans lesquels il apparaît. On vérifie ici l’usage de ces mots dans les titres avec la fonction <code>concordances</code>.</p>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">concordances</span>(corpus, dtm, <span class="st">&quot;fifa&quot;</span>)</span></code></pre></div>
+<pre><code>## X938 
+## fifa hi-tech euro  
+## X940 
+## fifa nina richi car fashion christian dior
+## X2344 
+## eiffel tower fiat nato european union fifa
+## X3631 
+## stonehenge fifa high culture  
+## X7684 
+## freedom fifa tourism work revenue
+## X7685 
+## fifa tourism   
+## X7686 
+## tourism fifa nato  
+## X7962 
+## fifa liar arrogant</code></pre>
+</div>
+<div id="suppression-de-mots-du-lexique-au-choix" class="section level3">
+<h3>2 : Suppression de mots du lexique (au choix)</h3>
+<p>On décide d’éliminer certains mots. On en fait une liste qu’on supprime du lexique. Ici zigzag et vs.</p>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>asupp <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;zigzag&quot;</span>, <span class="st">&quot;vs&quot;</span>)</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>dictemis2 <span class="ot">&lt;-</span> dictemis[<span class="sc">!</span><span class="fu">rownames</span>(dictemis) <span class="sc">%in%</span> asupp,]</span></code></pre></div>
+</div>
+</div>
+<div id="lemmatisation" class="section level2">
+<h2>Lemmatisation</h2>
+<p>La fonction <code>combine_terms</code> de R.temis permet de lemmatiser et donc réduire les mots à leur “racine”/ Token. On crée alors un nouveau tableau lexical … mais on ne va pas l’utiliser par la suite.</p>
+<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>dtm2 <span class="ot">&lt;-</span> <span class="fu">combine_terms</span>(dtm, dictemis2)</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>dtm2</span></code></pre></div>
+<pre><code>## &lt;&lt;DocumentTermMatrix (documents: 8143, terms: 3656)&gt;&gt;
+## Non-/sparse entries: 36092/29734716
+## Sparsity           : 100%
+## Maximal term length: 17
+## Weighting          : term frequency (tf)</code></pre>
+<p>La taille du vocabulaire est <em>réduite</em> à 3658 mots distincts au lieu de 4743 initialement.</p>
+</div>
+</div>
+<div id="les-mots-les-plus-employés" class="section level1">
+<h1>Les “mots” les plus employés</h1>
+<p>On affiche la distibution des 10 mots les plus fréquents (occurrence et %).</p>
+<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu">frequent_terms</span>(dtm, <span class="at">n=</span><span class="dv">10</span>)</span></code></pre></div>
+<pre><code>##             Global occ. Global %
+## union              1125 3.070163
+## developed           975 2.660808
+## culture             868 2.368802
+## development         866 2.363344
+## european            643 1.754769
+## euro                593 1.618317
+## rich                575 1.569195
+## freedom             430 1.173485
+## history             421 1.148923
+## continent           376 1.026117</code></pre>
+</div>
+<div id="repérer-les-cooccurrences" class="section level1">
+<h1>Repérer les cooccurrences</h1>
+<p>On affiche les mots <em>cooccurrents</em>, c’est à dire présents simultanément dans les unités textuelles). <em>Les termes qui partagent un même contexte partagent des significations similaires</em></p>
+<div id="rappel-le-tableau-lexical" class="section level2">
+<h2>rappel : le tableau lexical</h2>
+<center>
+<img src="images/im_TLE.png" height="300px" />
+</center>
+</div>
+<div id="recherche-de-mots-cooccurrents-à-certains-mots-au-choix" class="section level2">
+<h2>Recherche de mots cooccurrents à certains mots “au choix”</h2>
+<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cooc_terms</span>(dtm, <span class="st">&quot;france&quot;</span>, <span class="at">n=</span><span class="dv">10</span>)</span></code></pre></div>
+<pre><code>##             % Term/Cooc. % Cooc./Term   Global % Cooc. Global  t value Prob.
+## france         19.628647    100.00000 0.20194853    74     74      Inf     0
+## germany         8.488064     66.66667 0.13099364    32     48      Inf     0
+## italy           6.631300     55.55556 0.12280654    25     45      Inf     0
+## spain           5.835544     81.48148 0.07368392    22     27      Inf     0
+## england         2.917772     36.66667 0.08187103    11     30 7.728523     0
+## kingdom         2.387268     37.50000 0.06549682     9     24 6.993554     0
+## poland          1.591512     85.71429 0.01910324     6      7 6.740153     0
+## portugal        1.856764     46.66667 0.04093551     7     15 6.417648     0
+## belgium         1.591512     66.66667 0.02456131     6      9 6.371998     0
+## switzerland     1.856764     33.33333 0.05730972     7     21 5.970088     0</code></pre>
+<p>Parmi les réponses contenant le mot “france”, ce mot représente 19% des occurrences et 66% des réponses qui contiennent “france” contiennent aussi “germany”.</p>
+</div>
+<div id="visualisations-des-cooccurrences" class="section level2">
+<h2>Visualisations des cooccurrences</h2>
+<p>Autour des mots les plus centraux (analyse de similitude)</p>
+<p>On génère un graphe de mots où les mots les plus fréquents sont centraux et où les liens représentent les cooccurrences avec ces mots. On a le choix entre 2 affichages :</p>
+<ul>
+<li>Dans une fenêtre <em>R Plot</em> de R où on peut déplacer les mots et les liens mais on ne peut l’exporter qu’au format Postscript (non exécuté ici).</li>
+<li>Dans la fenêtre <em>Plots</em> de RStudio où on pout utiliser la fonction zoom et exporter le graphe sous différents formats.</li>
+</ul>
+<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">terms_graph</span>(dtm, <span class="at">vertex.label.cex =</span> <span class="fl">0.5</span>, <span class="at">interactive =</span> F)</span></code></pre></div>
+<p><img src="RTemis_EBM_tt_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
+<p>Faire une Analyse factorielle des correspondances sur TLE dans le cas de ce corpus n’est pas pertinent car ces textes sont constitués de suites de mots cités (et non des phrases).</p>
+</div>
+</div>
+<div id="mettre-en-relation-mots-et-métadonnées" class="section level1">
+<h1>Mettre en relation mots et métadonnées</h1>
+<p>On va mettre en relation les mots et les caractéristiques des étudiants à disposition (métadonnées).</p>
+<p>On peut afficher le tableau des métadonnées</p>
+<p>G_State G_City G_Study A1_Gender A10_LevInc A11_LevEdu_f A12_LevEdu_m A13_Rank1 PaysVis Mixit Nblang VecuEtranger</p>
+<div id="distributions" class="section level2">
+<h2>Distributions</h2>
+<p>On affiche les effectifs et répartitions des métadonnées</p>
+<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>tab1 <span class="ot">&lt;-</span> <span class="fu">freq</span>(<span class="fu">meta</span>(corpus)<span class="sc">$</span>G_State)</span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>tab1</span></code></pre></div>
+<pre><code>##        n    % val%
+## BEL  425  5.2  5.2
+## BRA  913 11.2 11.2
+## CHN 1139 14.0 14.0
+## CMR  989 12.1 12.1
+## FRA  547  6.7  6.7
+## HUN  222  2.7  2.7
+## IND  817 10.0 10.0
+## MDA  205  2.5  2.5
+## MLT  192  2.4  2.4
+## PRT  481  5.9  5.9
+## ROU  383  4.7  4.7
+## RUS  764  9.4  9.4
+## SEN  175  2.1  2.1
+## TUN  209  2.6  2.6
+## TUR  682  8.4  8.4</code></pre>
+<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>tab2 <span class="ot">&lt;-</span> <span class="fu">freq</span>(<span class="fu">meta</span>(corpus)<span class="sc">$</span>G_Study) </span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>tab2</span></code></pre></div>
+<pre><code>##        n    % val%
+##      175  2.1  2.1
+## ART 1201 14.7 14.7
+## BUS 1379 16.9 16.9
+## ENG 1301 16.0 16.0
+## HEA 1260 15.5 15.5
+## POL 1251 15.4 15.4
+## SHS 1576 19.4 19.4</code></pre>
+<div class="sourceCode" id="cb36"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>tab3 <span class="ot">&lt;-</span> <span class="fu">freq</span>(<span class="fu">meta</span>(corpus)<span class="sc">$</span>A1_Gender) </span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>tab3</span></code></pre></div>
+<pre><code>##      n    % val%
+## F 4015 49.3 49.3
+## M 4128 50.7 50.7</code></pre>
+<p>Attention, il faudra peut-être faire un sous-corpus pour enlever les non réponses. Ex <code>Corpus2 &lt;- corpus[meta(corpus, "G_Study") != " "]</code></p>
+</div>
+<div id="bilan-lexical" class="section level2">
+<h2>Bilan lexical</h2>
+<p>On peut utiliser des <em>éléments quantitatifs</em> sur le corpus pour le présenter, par exemple sa taille (nombre d’occurrences) ou le nombre de mots distincts (indicateur de “richesse” du vocabulaire). Pour faire ces comparaisons, le corpus est découpé en sous-parties à l’aide des modalités des métadonnées. Ici on compare par domaine d’étude</p>
+<div class="sourceCode" id="cb38"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="co">#lexical_summary(dtm, corpus, &quot;G_State&quot;, unit=&quot;global&quot; )</span></span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a><span class="fu">lexical_summary</span>(dtm, corpus, <span class="st">&quot;G_Study&quot;</span>, <span class="at">unit=</span><span class="st">&quot;global&quot;</span> )</span></code></pre></div>
+<pre><code>##                            
+## Per category total:                               ART          BUS          ENG
+##   Number of terms             807.000000  5163.000000  6160.000000  5600.000000
+##   Number of unique terms      327.000000  1430.000000  1577.000000  1524.000000
+##   Percent of unique terms      40.520446    27.697075    25.600649    27.214286
+##   Number of hapax legomena    214.000000   885.000000   965.000000   946.000000
+##   Percent of hapax legomena    26.517968    17.141197    15.665584    16.892857
+##   Number of words             885.000000  5422.000000  6497.000000  6055.000000
+##                            
+## Per category total:                  HEA          POL          SHS Corpus total
+##   Number of terms            5578.000000  5847.000000  7488.000000 36643.000000
+##   Number of unique terms     1490.000000  1511.000000  1786.000000  4765.000000
+##   Percent of unique terms      26.712083    25.842312    23.851496    13.003848
+##   Number of hapax legomena    918.000000   913.000000  1075.000000  2647.000000
+##   Percent of hapax legomena    16.457512    15.614845    14.356303     7.223754
+##   Number of words            5943.000000  6276.000000  8098.000000 39176.000000</code></pre>
+<p>Le corpus contient au total 39176 mots mais seulement 36643 sont pris en compte dans les analyes et 4765 mots distincts (après suppression de mots-outils et chiffres).</p>
+</div>
+</div>
+<div id="calculer-les-spécificités" class="section level1">
+<h1>Calculer les spécificités</h1>
+<p>Le vocabulaire d’une sous-popoulation construite selon les modalités d’une variable qualitative (métadonnée) est comparé à l’ensemble. Un <em>mot</em> (term) est <em>spécifique positivement</em> (ou caractéristique) si sa fréquence y est “anormalement élevée” (la probabilité calculées à partir du modèle hypergéométrique pour les valeurs égales ou supérieures à la sous-fréquence constatée est inférieure au seuil fixé au départ). On dit aussi que ce mot est <em>sur employé</em>.</p>
+<div id="mots-spécifiques" class="section level2">
+<h2>Mots spécifiques</h2>
+<p>On affiche les mots specifiques de chaque sous-population (ici contruite avec la variable sexe) par ordre de valeur-test décroissante.</p>
+<div class="sourceCode" id="cb40"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="fu">specific_terms</span>(dtm,<span class="fu">meta</span>(corpus)<span class="sc">$</span>A1_Gender, <span class="at">n=</span><span class="dv">10</span>)</span></code></pre></div>
+<pre><code>## $F
+##            % Term/Level % Level/Term   Global % Level Global occ.   t value
+## fashion     0.669729341    69.540230 0.47485195   121         174  5.336719
+## monuments   0.099629158    94.736842 0.05185165    18          19  4.013511
+## travel      0.387446726    69.306931 0.27563245    70         101  3.968577
+## ----------           NA           NA         NA    NA          NA        NA
+## continent   0.824708031    39.627660 1.02611686   149         376 -3.734723
+## uefa        0.005534953     5.263158 0.05185165     1          19 -3.899915
+## old         0.774893452    38.674033 0.98791038   140         362 -4.030856
+## xenophobia  0.132838878    27.272727 0.24015501    24          88 -4.102991
+## world       0.702939060    36.918605 0.93878776   127         344 -4.589863
+## occident    0.116234018    24.418605 0.23469694    21          86 -4.617441
+## football    0.260142802    29.375000 0.43664547    47         160 -5.048483
+##            Prob.
+## fashion    0e+00
+## monuments  0e+00
+## travel     0e+00
+## ----------    NA
+## continent  1e-04
+## uefa       0e+00
+## old        0e+00
+## xenophobia 0e+00
+## world      0e+00
+## occident   0e+00
+## football   0e+00
+## 
+## $M
+##            % Term/Level % Level/Term   Global % Level Global occ.   t value
+## football     0.60831180    70.625000 0.43664547   113         160  5.048483
+## occident     0.34991387    75.581395 0.23469694    65          86  4.617441
+## world        1.16817399    63.081395 0.93878776   217         344  4.589863
+## xenophobia   0.34453058    72.727273 0.24015501    64          88  4.102991
+## old          1.19509044    61.325967 0.98791038   222         362  4.030856
+## uefa         0.09689922    94.736842 0.05185165    18          19  3.899915
+## continent    1.22200689    60.372340 1.02611686   227         376  3.734723
+## ----------           NA           NA         NA    NA          NA        NA
+## travel       0.16688200    30.693069 0.27563245    31         101 -3.968577
+## monuments    0.00538329     5.263158 0.05185165     1          19 -4.013511
+## fashion      0.28531438    30.459770 0.47485195    53         174 -5.336719
+##            Prob.
+## football   0e+00
+## occident   0e+00
+## world      0e+00
+## xenophobia 0e+00
+## old        0e+00
+## uefa       0e+00
+## continent  1e-04
+## ----------    NA
+## travel     0e+00
+## monuments  0e+00
+## fashion    0e+00</code></pre>
+<div class="sourceCode" id="cb42"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="co">#specific_terms(dtm,meta(corpus)$G_State, n=10)</span></span></code></pre></div>
+<p>Exemple d’interprétation : le mot “fashion” est specifique des filles. Il représente 0,66% de l’ensemble des occurrences des mots cités par des femmes et 69% des occurrences du mot “fashion” sont cités par des filles.<br />
+Le mot “footbal” est spécifique aux garçons respectivement (0.6% et 70 %). Ces valeurs sont significatives au seuil de 5% (p-value &lt; 0.05 et t-value &gt; 2).</p>
+<p>Observez les mots spécifiques cités par les enquêtés en Russie. Que pensez-vous du mots <em>mother</em> ?</p>
+</div>
+<div id="réponses-spécifiques" class="section level2">
+<h2>Réponses spécifiques</h2>
+<p>Le calcul de la distance est fondé sur la métrique du Khi2 et mesure l’écart entre le profil d’un document et le profil moyen du document de la sous-population. Ce critère a tendance à favoriser les documents longs car plus ils contiennent de « mots », plus ils ont de chance de contenir de « mots » cooccurrents, et donc de se rapprocher du profil moyen.</p>
+<div class="sourceCode" id="cb43"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="fu">characteristic_docs</span>(corpus,dtm,<span class="fu">meta</span>(corpus)<span class="sc">$</span>A1_Gender, <span class="at">ndocs=</span><span class="dv">5</span>)</span></code></pre></div>
+<pre><code>## Documents characteristic of: F 
+## X7545: distance 9.124 
+## development diversity euro european union rich history
+## 
+## X3498: distance 10.18 
+## culture history euro civilization european union
+## 
+## X4819: distance 10.63 
+## freedom history culture development union
+## 
+## X7100: distance 11.94 
+## european union euro continent rich diversity
+## 
+## X7174: distance 12.52 
+## old continent european union culture  
+## 
+## Documents characteristic of: M 
+## X6500: distance 9.92 
+## old continent european union euro development 
+## 
+## X7526: distance 10.09 
+## development culture european union  
+## 
+## X3130: distance 10.17 
+## continent union euro development culture
+## 
+## X6207: distance 11.27 
+## culture european union euro  
+## 
+## X3212: distance 12.13 
+## union rich countries euro continent power</code></pre>
+</div>
+</div>
+<div id="analyse-des-correspondances-sur-le-tableau-lexical-agrégé" class="section level1">
+<h1>Analyse des correspondances sur le tableau lexical agrégé</h1>
+<p>Le <em>tableau lexical agrégé</em> croise en lignes les <em>mots</em> (termes) et en colonnes les modalités d’une ou plusieurs variables qualtatives (métadonnées) ; c’est un <em>tableau de contigence</em> sur lequel on peut exécuter une analyse factorielle. Celle-ci permet de structurer l’ensemble des <em>mots</em> en fonction ici des caractéristiques des enquêtés.</p>
+<p>La fonction <code>corpus_ca</code> exécute une Analyse factorielle sur le tableau lexical créé ici avec les variables <em>pays</em>, <em>domaine d’étude</em>, <em>genre</em> et <em>avoir_vecu_a_l_etranger</em>. On a vérifié que les modalités étaient réparties “équitablement”. On cherche à repérer des profils types.</p>
+<p>Les plans factoriels permettnt d’observer la position réciproque des mots et des métadonnées et de faire émerger des groupes de représentations qui s’attachent à des sous-populations</p>
+<p>Rappel des noms de variables a disposition : G_State G_City G_Study A1_Gender A10_LevInc A11_LevEdu_f A12_LevEdu_m A13_Rank1 PaysVis Mixit Nblang VecuEtranger</p>
+<div class="sourceCode" id="cb45"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>resTLA <span class="ot">&lt;-</span> <span class="fu">corpus_ca</span>(corpus, dtm, <span class="at">variables=</span><span class="fu">c</span>(<span class="st">&quot;G_State&quot;</span>, <span class="st">&quot;G_Study&quot;</span>, <span class="st">&quot;A1_Gender&quot;</span>,<span class="st">&quot;VecuEtranger&quot;</span>), <span class="at">sparsity=</span><span class="fl">0.98</span>)</span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a><span class="co">#explor(resTLA)</span></span>
+<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a>res <span class="ot">&lt;-</span> explor<span class="sc">::</span><span class="fu">prepare_results</span>(resTLA)</span>
+<span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a>explor<span class="sc">::</span><span class="fu">CA_var_plot</span>(res, <span class="at">xax =</span> <span class="dv">1</span>, <span class="at">yax =</span> <span class="dv">2</span>, <span class="at">lev_sup =</span> <span class="cn">FALSE</span>, <span class="at">var_sup =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb45-5"><a href="#cb45-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">var_sup_choice =</span> , <span class="at">var_hide =</span> <span class="st">&quot;None&quot;</span>, <span class="at">var_lab_min_contrib =</span> <span class="dv">0</span>, <span class="at">col_var =</span> <span class="st">&quot;Position&quot;</span>,</span>
+<span id="cb45-6"><a href="#cb45-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">symbol_var =</span> <span class="st">&quot;Type&quot;</span>, <span class="at">size_var =</span> <span class="cn">NULL</span>, <span class="at">size_range =</span> <span class="fu">c</span>(<span class="dv">10</span>, <span class="dv">300</span>), <span class="at">labels_size =</span> <span class="dv">10</span>,</span>
+<span id="cb45-7"><a href="#cb45-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">point_size =</span> <span class="dv">56</span>, <span class="at">transitions =</span> <span class="cn">TRUE</span>, <span class="at">labels_positions =</span> <span class="cn">NULL</span>, <span class="at">xlim =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="fl">1.01</span>,</span>
+<span id="cb45-8"><a href="#cb45-8" aria-hidden="true" tabindex="-1"></a>        <span class="fl">1.85</span>), <span class="at">ylim =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="fl">0.939</span>, <span class="fl">1.92</span>))</span></code></pre></div>
+<div id="htmlwidget-b1bcb3f1d00b6dc8b802" style="width:672px;height:480px;" class="scatterD3 html-widget"></div>
+<script type="application/json" data-for="htmlwidget-b1bcb3f1d00b6dc8b802">{"x":{"data":{"x":[0.677,-0.158,-0.004,-0.107,0.201,-0.241,0.072,0.501,-0.129,-0.34,-0.126,-0.213,-0.055,-0.3,-0.218,0.123,0.016,0.437,0.271,-0.287,-0.111,-0.166,-0.096,-0.218,0.105,0.554,1.131,0.087,-0.277,-0.3,-0.22,-0.045,-0.601,-0.379,1.442,0.36,-0.551,-0.558,0.554,-0.244,-0.235,-0.512,-0.573,-0.284,-0.088,-0.016,0.01,-0.088,-0.024,-0.03,-0.021,0.039,0.051,-0.002,0.038,-0.038,0.04,-0.304],"y":[-0.27,-0.146,-0.095,0.241,0.178,-0.157,0.35,-0.031,0.273,-0.191,0.041,-0.135,0.026,-0.22,-0.177,-0.353,0.033,-0.107,-0.009,-0.167,-0.034,0.043,0.046,0.059,1.136,0.012,-0.44,0.281,-0.161,-0.141,0.304,0.14,-0.343,0.081,-0.397,0.751,-0.176,-0.213,-0.122,0.127,-0.269,-0.182,-0.306,-0.402,1.423,0.921,0.134,1.423,-0.084,-0.078,-0.084,0.033,-0.001,0.008,-0.058,0.058,-0.004,0.034],"lab":["beautiful","beauty","civilization","continent","countries","culture","democracy","developed","development","diversity","economic","economy","education","euro","european","fashion","freedom","good","high","history","money","old","peace","power","racism","rich","romantic","technology","union","unity","wealth","world","G_State_BEL","G_State_BRA","G_State_CHN","G_State_CMR","G_State_FRA","G_State_HUN","G_State_IND","G_State_MDA","G_State_MLT","G_State_PRT","G_State_ROU","G_State_RUS","G_State_SEN","G_State_TUN","G_State_TUR","G_Study_","G_Study_ART","G_Study_BUS","G_Study_ENG","G_Study_HEA","G_Study_POL","G_Study_SHS","A1_Gender_F","A1_Gender_M","VecuEtrang_Vecu_etra_N","VecuEtrang_Vecu_etra_O"],"col_var":["Column","Column","Column","Column","Column","Column","Column","Column","Column","Column","Column","Column","Column","Column","Column","Column","Column","Column","Column","Column","Column","Column","Column","Column","Column","Column","Column","Column","Column","Column","Column","Column","Row","Row","Row","Row","Row","Row","Row","Row","Row","Row","Row","Row","Row","Row","Row","Row","Row","Row","Row","Row","Row","Row","Row","Row","Row","Row"],"symbol_var":["Active","Active","Active","Active","Active","Active","Active","Active","Active","Active","Active","Active","Active","Active","Active","Active","Active","Active","Active","Active","Active","Active","Active","Active","Active","Active","Active","Active","Active","Active","Active","Active","Active","Active","Active","Active","Active","Active","Active","Active","Active","Active","Active","Active","Active","Active","Active","Active","Active","Active","Active","Active","Active","Active","Active","Active","Active","Active"],"type_var":["point","point","point","point","point","point","point","point","point","point","point","point","point","point","point","point","point","point","point","point","point","point","point","point","point","point","point","point","point","point","point","point","point","point","point","point","point","point","point","point","point","point","point","point","point","point","point","point","point","point","point","point","point","point","point","point","point","point"],"key_var":["Column-beautiful","Column-beauty","Column-civilization","Column-continent","Column-countries","Column-culture","Column-democracy","Column-developed","Column-development","Column-diversity","Column-economic","Column-economy","Column-education","Column-euro","Column-european","Column-fashion","Column-freedom","Column-good","Column-high","Column-history","Column-money","Column-old","Column-peace","Column-power","Column-racism","Column-rich","Column-romantic","Column-technology","Column-union","Column-unity","Column-wealth","Column-world","Row-G_State_BEL","Row-G_State_BRA","Row-G_State_CHN","Row-G_State_CMR","Row-G_State_FRA","Row-G_State_HUN","Row-G_State_IND","Row-G_State_MDA","Row-G_State_MLT","Row-G_State_PRT","Row-G_State_ROU","Row-G_State_RUS","Row-G_State_SEN","Row-G_State_TUN","Row-G_State_TUR","Row-G_Study_","Row-G_Study_ART","Row-G_Study_BUS","Row-G_Study_ENG","Row-G_Study_HEA","Row-G_Study_POL","Row-G_Study_SHS","Row-A1_Gender_F","Row-A1_Gender_M","Row-VecuEtrang_Vecu_etra_N","Row-VecuEtrang_Vecu_etra_O"],"tooltip_text":["<strong>beautiful<\/strong><br /> <strong>Position:<\/strong> Column<br /> <strong>Axis 1 :<\/strong> 0.677<br /> <strong>Axis 2 :<\/strong> -0.27<br /> <strong>Cosinus carré:<\/strong> 0.785<br /> <strong>Contribution:<\/strong> 15.41<br /> <strong>Effectif:<\/strong> 4498","<strong>beauty<\/strong><br /> <strong>Position:<\/strong> Column<br /> <strong>Axis 1 :<\/strong> -0.158<br /> <strong>Axis 2 :<\/strong> -0.146<br /> <strong>Cosinus carré:<\/strong> 0.139<br /> <strong>Contribution:<\/strong> 0.831<br /> <strong>Effectif:<\/strong> 2314","<strong>civilization<\/strong><br /> <strong>Position:<\/strong> Column<br /> <strong>Axis 1 :<\/strong> -0.004<br /> <strong>Axis 2 :<\/strong> -0.095<br /> <strong>Cosinus carré:<\/strong> 0.037<br /> <strong>Contribution:<\/strong> 0.369<br /> <strong>Effectif:<\/strong> 4069","<strong>continent<\/strong><br /> <strong>Position:<\/strong> Column<br /> <strong>Axis 1 :<\/strong> -0.107<br /> <strong>Axis 2 :<\/strong> 0.241<br /> <strong>Cosinus carré:<\/strong> 0.324<br /> <strong>Contribution:<\/strong> 3.165<br /> <strong>Effectif:<\/strong> 4888","<strong>countries<\/strong><br /> <strong>Position:<\/strong> Column<br /> <strong>Axis 1 :<\/strong> 0.201<br /> <strong>Axis 2 :<\/strong> 0.178<br /> <strong>Cosinus carré:<\/strong> 0.359<br /> <strong>Contribution:<\/strong> 2.548<br /> <strong>Effectif:<\/strong> 4602","<strong>culture<\/strong><br /> <strong>Position:<\/strong> Column<br /> <strong>Axis 1 :<\/strong> -0.241<br /> <strong>Axis 2 :<\/strong> -0.157<br /> <strong>Cosinus carré:<\/strong> 0.572<br /> <strong>Contribution:<\/strong> 6.633<br /> <strong>Effectif:<\/strong> 11284","<strong>democracy<\/strong><br /> <strong>Position:<\/strong> Column<br /> <strong>Axis 1 :<\/strong> 0.072<br /> <strong>Axis 2 :<\/strong> 0.35<br /> <strong>Cosinus carré:<\/strong> 0.551<br /> <strong>Contribution:<\/strong> 5.745<br /> <strong>Effectif:<\/strong> 4576","<strong>developed<\/strong><br /> <strong>Position:<\/strong> Column<br /> <strong>Axis 1 :<\/strong> 0.501<br /> <strong>Axis 2 :<\/strong> -0.031<br /> <strong>Cosinus carré:<\/strong> 0.946<br /> <strong>Contribution:<\/strong> 18.863<br /> <strong>Effectif:<\/strong> 12675","<strong>development<\/strong><br /> <strong>Position:<\/strong> Column<br /> <strong>Axis 1 :<\/strong> -0.129<br /> <strong>Axis 2 :<\/strong> 0.273<br /> <strong>Cosinus carré:<\/strong> 0.619<br /> <strong>Contribution:<\/strong> 9.487<br /> <strong>Effectif:<\/strong> 11258","<strong>diversity<\/strong><br /> <strong>Position:<\/strong> Column<br /> <strong>Axis 1 :<\/strong> -0.34<br /> <strong>Axis 2 :<\/strong> -0.191<br /> <strong>Cosinus carré:<\/strong> 0.377<br /> <strong>Contribution:<\/strong> 3.423<br /> <strong>Effectif:<\/strong> 3276","<strong>economic<\/strong><br /> <strong>Position:<\/strong> Column<br /> <strong>Axis 1 :<\/strong> -0.126<br /> <strong>Axis 2 :<\/strong> 0.041<br /> <strong>Cosinus carré:<\/strong> 0.248<br /> <strong>Contribution:<\/strong> 0.287<br /> <strong>Effectif:<\/strong> 2600","<strong>economy<\/strong><br /> <strong>Position:<\/strong> Column<br /> <strong>Axis 1 :<\/strong> -0.213<br /> <strong>Axis 2 :<\/strong> -0.135<br /> <strong>Cosinus carré:<\/strong> 0.426<br /> <strong>Contribution:<\/strong> 1.449<br /> <strong>Effectif:<\/strong> 3224","<strong>education<\/strong><br /> <strong>Position:<\/strong> Column<br /> <strong>Axis 1 :<\/strong> -0.055<br /> <strong>Axis 2 :<\/strong> 0.026<br /> <strong>Cosinus carré:<\/strong> 0.022<br /> <strong>Contribution:<\/strong> 0.074<br /> <strong>Effectif:<\/strong> 3042","<strong>euro<\/strong><br /> <strong>Position:<\/strong> Column<br /> <strong>Axis 1 :<\/strong> -0.3<br /> <strong>Axis 2 :<\/strong> -0.22<br /> <strong>Cosinus carré:<\/strong> 0.52<br /> <strong>Contribution:<\/strong> 7.798<br /> <strong>Effectif:<\/strong> 7709","<strong>european<\/strong><br /> <strong>Position:<\/strong> Column<br /> <strong>Axis 1 :<\/strong> -0.218<br /> <strong>Axis 2 :<\/strong> -0.177<br /> <strong>Cosinus carré:<\/strong> 0.51<br /> <strong>Contribution:<\/strong> 4.951<br /> <strong>Effectif:<\/strong> 8359","<strong>fashion<\/strong><br /> <strong>Position:<\/strong> Column<br /> <strong>Axis 1 :<\/strong> 0.123<br /> <strong>Axis 2 :<\/strong> -0.353<br /> <strong>Cosinus carré:<\/strong> 0.217<br /> <strong>Contribution:<\/strong> 3.016<br /> <strong>Effectif:<\/strong> 2262","<strong>freedom<\/strong><br /> <strong>Position:<\/strong> Column<br /> <strong>Axis 1 :<\/strong> 0.016<br /> <strong>Axis 2 :<\/strong> 0.033<br /> <strong>Cosinus carré:<\/strong> 0.007<br /> <strong>Contribution:<\/strong> 0.069<br /> <strong>Effectif:<\/strong> 5590","<strong>good<\/strong><br /> <strong>Position:<\/strong> Column<br /> <strong>Axis 1 :<\/strong> 0.437<br /> <strong>Axis 2 :<\/strong> -0.107<br /> <strong>Cosinus carré:<\/strong> 0.793<br /> <strong>Contribution:<\/strong> 2.886<br /> <strong>Effectif:<\/strong> 2327","<strong>high<\/strong><br /> <strong>Position:<\/strong> Column<br /> <strong>Axis 1 :<\/strong> 0.271<br /> <strong>Axis 2 :<\/strong> -0.009<br /> <strong>Cosinus carré:<\/strong> 0.389<br /> <strong>Contribution:<\/strong> 1.678<br /> <strong>Effectif:<\/strong> 3874","<strong>history<\/strong><br /> <strong>Position:<\/strong> Column<br /> <strong>Axis 1 :<\/strong> -0.287<br /> <strong>Axis 2 :<\/strong> -0.167<br /> <strong>Cosinus carré:<\/strong> 0.49<br /> <strong>Contribution:<\/strong> 4.185<br /> <strong>Effectif:<\/strong> 5473","<strong>money<\/strong><br /> <strong>Position:<\/strong> Column<br /> <strong>Axis 1 :<\/strong> -0.111<br /> <strong>Axis 2 :<\/strong> -0.034<br /> <strong>Cosinus carré:<\/strong> 0.063<br /> <strong>Contribution:<\/strong> 0.185<br /> <strong>Effectif:<\/strong> 2197","<strong>old<\/strong><br /> <strong>Position:<\/strong> Column<br /> <strong>Axis 1 :<\/strong> -0.166<br /> <strong>Axis 2 :<\/strong> 0.043<br /> <strong>Cosinus carré:<\/strong> 0.226<br /> <strong>Contribution:<\/strong> 0.845<br /> <strong>Effectif:<\/strong> 4706","<strong>peace<\/strong><br /> <strong>Position:<\/strong> Column<br /> <strong>Axis 1 :<\/strong> -0.096<br /> <strong>Axis 2 :<\/strong> 0.046<br /> <strong>Cosinus carré:<\/strong> 0.06<br /> <strong>Contribution:<\/strong> 0.163<br /> <strong>Effectif:<\/strong> 2184","<strong>power<\/strong><br /> <strong>Position:<\/strong> Column<br /> <strong>Axis 1 :<\/strong> -0.218<br /> <strong>Axis 2 :<\/strong> 0.059<br /> <strong>Cosinus carré:<\/strong> 0.333<br /> <strong>Contribution:<\/strong> 1.352<br /> <strong>Effectif:<\/strong> 4290","<strong>racism<\/strong><br /> <strong>Position:<\/strong> Column<br /> <strong>Axis 1 :<\/strong> 0.105<br /> <strong>Axis 2 :<\/strong> 1.136<br /> <strong>Cosinus carré:<\/strong> 0.876<br /> <strong>Contribution:<\/strong> 45.536<br /> <strong>Effectif:<\/strong> 3510","<strong>rich<\/strong><br /> <strong>Position:<\/strong> Column<br /> <strong>Axis 1 :<\/strong> 0.554<br /> <strong>Axis 2 :<\/strong> 0.012<br /> <strong>Cosinus carré:<\/strong> 0.914<br /> <strong>Contribution:<\/strong> 13.479<br /> <strong>Effectif:<\/strong> 7475","<strong>romantic<\/strong><br /> <strong>Position:<\/strong> Column<br /> <strong>Axis 1 :<\/strong> 1.131<br /> <strong>Axis 2 :<\/strong> -0.44<br /> <strong>Cosinus carré:<\/strong> 0.805<br /> <strong>Contribution:<\/strong> 25.603<br /> <strong>Effectif:<\/strong> 2704","<strong>technology<\/strong><br /> <strong>Position:<\/strong> Column<br /> <strong>Axis 1 :<\/strong> 0.087<br /> <strong>Axis 2 :<\/strong> 0.281<br /> <strong>Cosinus carré:<\/strong> 0.365<br /> <strong>Contribution:<\/strong> 2.864<br /> <strong>Effectif:<\/strong> 3445","<strong>union<\/strong><br /> <strong>Position:<\/strong> Column<br /> <strong>Axis 1 :<\/strong> -0.277<br /> <strong>Axis 2 :<\/strong> -0.161<br /> <strong>Cosinus carré:<\/strong> 0.633<br /> <strong>Contribution:<\/strong> 10.384<br /> <strong>Effectif:<\/strong> 14625","<strong>unity<\/strong><br /> <strong>Position:<\/strong> Column<br /> <strong>Axis 1 :<\/strong> -0.3<br /> <strong>Axis 2 :<\/strong> -0.141<br /> <strong>Cosinus carré:<\/strong> 0.231<br /> <strong>Contribution:<\/strong> 1.719<br /> <strong>Effectif:<\/strong> 2366","<strong>wealth<\/strong><br /> <strong>Position:<\/strong> Column<br /> <strong>Axis 1 :<\/strong> -0.22<br /> <strong>Axis 2 :<\/strong> 0.304<br /> <strong>Cosinus carré:<\/strong> 0.306<br /> <strong>Contribution:<\/strong> 4.062<br /> <strong>Effectif:<\/strong> 3367","<strong>world<\/strong><br /> <strong>Position:<\/strong> Column<br /> <strong>Axis 1 :<\/strong> -0.045<br /> <strong>Axis 2 :<\/strong> 0.14<br /> <strong>Cosinus carré:<\/strong> 0.169<br /> <strong>Contribution:<\/strong> 0.936<br /> <strong>Effectif:<\/strong> 4472","<strong>G_State_BEL<\/strong><br /> <strong>Position:<\/strong> Row<br /> <strong>Axis 1 :<\/strong> -0.601<br /> <strong>Axis 2 :<\/strong> -0.343<br /> <strong>Cosinus carré:<\/strong> 0.488<br /> <strong>Contribution:<\/strong> 7.859<br /> <strong>Effectif:<\/strong> 733","<strong>G_State_BRA<\/strong><br /> <strong>Position:<\/strong> Row<br /> <strong>Axis 1 :<\/strong> -0.379<br /> <strong>Axis 2 :<\/strong> 0.081<br /> <strong>Cosinus carré:<\/strong> 0.239<br /> <strong>Contribution:<\/strong> 4.702<br /> <strong>Effectif:<\/strong> 1593","<strong>G_State_CHN<\/strong><br /> <strong>Position:<\/strong> Row<br /> <strong>Axis 1 :<\/strong> 1.442<br /> <strong>Axis 2 :<\/strong> -0.397<br /> <strong>Cosinus carré:<\/strong> 0.951<br /> <strong>Contribution:<\/strong> 66.094<br /> <strong>Effectif:<\/strong> 1474","<strong>G_State_CMR<\/strong><br /> <strong>Position:<\/strong> Row<br /> <strong>Axis 1 :<\/strong> 0.36<br /> <strong>Axis 2 :<\/strong> 0.751<br /> <strong>Cosinus carré:<\/strong> 0.766<br /> <strong>Contribution:<\/strong> 31.812<br /> <strong>Effectif:<\/strong> 1530","<strong>G_State_FRA<\/strong><br /> <strong>Position:<\/strong> Row<br /> <strong>Axis 1 :<\/strong> -0.551<br /> <strong>Axis 2 :<\/strong> -0.176<br /> <strong>Cosinus carré:<\/strong> 0.521<br /> <strong>Contribution:<\/strong> 6.807<br /> <strong>Effectif:<\/strong> 1000","<strong>G_State_HUN<\/strong><br /> <strong>Position:<\/strong> Row<br /> <strong>Axis 1 :<\/strong> -0.558<br /> <strong>Axis 2 :<\/strong> -0.213<br /> <strong>Cosinus carré:<\/strong> 0.401<br /> <strong>Contribution:<\/strong> 3.071<br /> <strong>Effectif:<\/strong> 414","<strong>G_State_IND<\/strong><br /> <strong>Position:<\/strong> Row<br /> <strong>Axis 1 :<\/strong> 0.554<br /> <strong>Axis 2 :<\/strong> -0.122<br /> <strong>Cosinus carré:<\/strong> 0.385<br /> <strong>Contribution:<\/strong> 5.769<br /> <strong>Effectif:<\/strong> 909","<strong>G_State_MDA<\/strong><br /> <strong>Position:<\/strong> Row<br /> <strong>Axis 1 :<\/strong> -0.244<br /> <strong>Axis 2 :<\/strong> 0.127<br /> <strong>Cosinus carré:<\/strong> 0.084<br /> <strong>Contribution:<\/strong> 0.602<br /> <strong>Effectif:<\/strong> 361","<strong>G_State_MLT<\/strong><br /> <strong>Position:<\/strong> Row<br /> <strong>Axis 1 :<\/strong> -0.235<br /> <strong>Axis 2 :<\/strong> -0.269<br /> <strong>Cosinus carré:<\/strong> 0.201<br /> <strong>Contribution:<\/strong> 0.899<br /> <strong>Effectif:<\/strong> 263","<strong>G_State_PRT<\/strong><br /> <strong>Position:<\/strong> Row<br /> <strong>Axis 1 :<\/strong> -0.512<br /> <strong>Axis 2 :<\/strong> -0.182<br /> <strong>Cosinus carré:<\/strong> 0.614<br /> <strong>Contribution:<\/strong> 5.504<br /> <strong>Effectif:<\/strong> 905","<strong>G_State_ROU<\/strong><br /> <strong>Position:<\/strong> Row<br /> <strong>Axis 1 :<\/strong> -0.573<br /> <strong>Axis 2 :<\/strong> -0.306<br /> <strong>Cosinus carré:<\/strong> 0.297<br /> <strong>Contribution:<\/strong> 5.784<br /> <strong>Effectif:<\/strong> 621","<strong>G_State_RUS<\/strong><br /> <strong>Position:<\/strong> Row<br /> <strong>Axis 1 :<\/strong> -0.284<br /> <strong>Axis 2 :<\/strong> -0.402<br /> <strong>Cosinus carré:<\/strong> 0.292<br /> <strong>Contribution:<\/strong> 8.709<br /> <strong>Effectif:<\/strong> 1284","<strong>G_State_SEN<\/strong><br /> <strong>Position:<\/strong> Row<br /> <strong>Axis 1 :<\/strong> -0.088<br /> <strong>Axis 2 :<\/strong> 1.423<br /> <strong>Cosinus carré:<\/strong> 0.796<br /> <strong>Contribution:<\/strong> 17.877<br /> <strong>Effectif:<\/strong> 271","<strong>G_State_TUN<\/strong><br /> <strong>Position:<\/strong> Row<br /> <strong>Axis 1 :<\/strong> -0.016<br /> <strong>Axis 2 :<\/strong> 0.921<br /> <strong>Cosinus carré:<\/strong> 0.603<br /> <strong>Contribution:<\/strong> 9.932<br /> <strong>Effectif:<\/strong> 360","<strong>G_State_TUR<\/strong><br /> <strong>Position:<\/strong> Row<br /> <strong>Axis 1 :<\/strong> 0.01<br /> <strong>Axis 2 :<\/strong> 0.134<br /> <strong>Cosinus carré:<\/strong> 0.035<br /> <strong>Contribution:<\/strong> 0.49<br /> <strong>Effectif:<\/strong> 839","<strong>G_Study_<\/strong><br /> <strong>Position:<\/strong> Row<br /> <strong>Axis 1 :<\/strong> -0.088<br /> <strong>Axis 2 :<\/strong> 1.423<br /> <strong>Cosinus carré:<\/strong> 0.796<br /> <strong>Contribution:<\/strong> 17.877<br /> <strong>Effectif:<\/strong> 271","<strong>G_Study_ART<\/strong><br /> <strong>Position:<\/strong> Row<br /> <strong>Axis 1 :<\/strong> -0.024<br /> <strong>Axis 2 :<\/strong> -0.084<br /> <strong>Cosinus carré:<\/strong> 0.152<br /> <strong>Contribution:<\/strong> 0.399<br /> <strong>Effectif:<\/strong> 1664","<strong>G_Study_BUS<\/strong><br /> <strong>Position:<\/strong> Row<br /> <strong>Axis 1 :<\/strong> -0.03<br /> <strong>Axis 2 :<\/strong> -0.078<br /> <strong>Cosinus carré:<\/strong> 0.249<br /> <strong>Contribution:<\/strong> 0.466<br /> <strong>Effectif:<\/strong> 2151","<strong>G_Study_ENG<\/strong><br /> <strong>Position:<\/strong> Row<br /> <strong>Axis 1 :<\/strong> -0.021<br /> <strong>Axis 2 :<\/strong> -0.084<br /> <strong>Cosinus carré:<\/strong> 0.199<br /> <strong>Contribution:<\/strong> 0.451<br /> <strong>Effectif:<\/strong> 1903","<strong>G_Study_HEA<\/strong><br /> <strong>Position:<\/strong> Row<br /> <strong>Axis 1 :<\/strong> 0.039<br /> <strong>Axis 2 :<\/strong> 0.033<br /> <strong>Cosinus carré:<\/strong> 0.069<br /> <strong>Contribution:<\/strong> 0.123<br /> <strong>Effectif:<\/strong> 1883","<strong>G_Study_POL<\/strong><br /> <strong>Position:<\/strong> Row<br /> <strong>Axis 1 :<\/strong> 0.051<br /> <strong>Axis 2 :<\/strong> -0.001<br /> <strong>Cosinus carré:<\/strong> 0.073<br /> <strong>Contribution:<\/strong> 0.1<br /> <strong>Effectif:<\/strong> 1981","<strong>G_Study_SHS<\/strong><br /> <strong>Position:<\/strong> Row<br /> <strong>Axis 1 :<\/strong> -0.002<br /> <strong>Axis 2 :<\/strong> 0.008<br /> <strong>Cosinus carré:<\/strong> 0.002<br /> <strong>Contribution:<\/strong> 0.005<br /> <strong>Effectif:<\/strong> 2704","<strong>A1_Gender_F<\/strong><br /> <strong>Position:<\/strong> Row<br /> <strong>Axis 1 :<\/strong> 0.038<br /> <strong>Axis 2 :<\/strong> -0.058<br /> <strong>Cosinus carré:<\/strong> 0.319<br /> <strong>Contribution:<\/strong> 0.861<br /> <strong>Effectif:<\/strong> 6239","<strong>A1_Gender_M<\/strong><br /> <strong>Position:<\/strong> Row<br /> <strong>Axis 1 :<\/strong> -0.038<br /> <strong>Axis 2 :<\/strong> 0.058<br /> <strong>Cosinus carré:<\/strong> 0.319<br /> <strong>Contribution:<\/strong> 0.85<br /> <strong>Effectif:<\/strong> 6318","<strong>VecuEtrang_Vecu_etra_N<\/strong><br /> <strong>Position:<\/strong> Row<br /> <strong>Axis 1 :<\/strong> 0.04<br /> <strong>Axis 2 :<\/strong> -0.004<br /> <strong>Cosinus carré:<\/strong> 0.783<br /> <strong>Contribution:<\/strong> 0.341<br /> <strong>Effectif:<\/strong> 11107","<strong>VecuEtrang_Vecu_etra_O<\/strong><br /> <strong>Position:<\/strong> Row<br /> <strong>Axis 1 :<\/strong> -0.304<br /> <strong>Axis 2 :<\/strong> 0.034<br /> <strong>Cosinus carré:<\/strong> 0.783<br /> <strong>Contribution:<\/strong> 2.616<br /> <strong>Effectif:<\/strong> 1450"]},"settings":{"x_log":false,"y_log":false,"labels_size":10,"labels_positions":null,"point_size":56,"point_opacity":1,"opacities":null,"hover_size":1,"hover_opacity":null,"xlab":"Axis 1 (36.45%)","ylab":"Axis 2 (21.44%)","has_labels":true,"col_lab":"Position","col_continuous":false,"col_levels":null,"colors":null,"ellipses":false,"ellipses_data":[],"symbol_lab":"Type","symbol_levels":null,"symbols":null,"size_range":[10,300],"size_lab":"if (is.null(size_var)) NULL else var_data[, size_var]","sizes":null,"opacity_lab":"NULL","opacities.1":null,"unit_circle":false,"has_color_var":true,"has_symbol_var":true,"has_size_var":false,"has_opacity_var":false,"has_url_var":false,"has_legend":true,"has_tooltips":true,"tooltip_text":["<strong>beautiful<\/strong><br /> <strong>Position:<\/strong> Column<br /> <strong>Axis 1 :<\/strong> 0.677<br /> <strong>Axis 2 :<\/strong> -0.27<br /> <strong>Cosinus carré:<\/strong> 0.785<br /> <strong>Contribution:<\/strong> 15.41<br /> <strong>Effectif:<\/strong> 4498","<strong>beauty<\/strong><br /> <strong>Position:<\/strong> Column<br /> <strong>Axis 1 :<\/strong> -0.158<br /> <strong>Axis 2 :<\/strong> -0.146<br /> <strong>Cosinus carré:<\/strong> 0.139<br /> <strong>Contribution:<\/strong> 0.831<br /> <strong>Effectif:<\/strong> 2314","<strong>civilization<\/strong><br /> <strong>Position:<\/strong> Column<br /> <strong>Axis 1 :<\/strong> -0.004<br /> <strong>Axis 2 :<\/strong> -0.095<br /> <strong>Cosinus carré:<\/strong> 0.037<br /> <strong>Contribution:<\/strong> 0.369<br /> <strong>Effectif:<\/strong> 4069","<strong>continent<\/strong><br /> <strong>Position:<\/strong> Column<br /> <strong>Axis 1 :<\/strong> -0.107<br /> <strong>Axis 2 :<\/strong> 0.241<br /> <strong>Cosinus carré:<\/strong> 0.324<br /> <strong>Contribution:<\/strong> 3.165<br /> <strong>Effectif:<\/strong> 4888","<strong>countries<\/strong><br /> <strong>Position:<\/strong> Column<br /> <strong>Axis 1 :<\/strong> 0.201<br /> <strong>Axis 2 :<\/strong> 0.178<br /> <strong>Cosinus carré:<\/strong> 0.359<br /> <strong>Contribution:<\/strong> 2.548<br /> <strong>Effectif:<\/strong> 4602","<strong>culture<\/strong><br /> <strong>Position:<\/strong> Column<br /> <strong>Axis 1 :<\/strong> -0.241<br /> <strong>Axis 2 :<\/strong> -0.157<br /> <strong>Cosinus carré:<\/strong> 0.572<br /> <strong>Contribution:<\/strong> 6.633<br /> <strong>Effectif:<\/strong> 11284","<strong>democracy<\/strong><br /> <strong>Position:<\/strong> Column<br /> <strong>Axis 1 :<\/strong> 0.072<br /> <strong>Axis 2 :<\/strong> 0.35<br /> <strong>Cosinus carré:<\/strong> 0.551<br /> <strong>Contribution:<\/strong> 5.745<br /> <strong>Effectif:<\/strong> 4576","<strong>developed<\/strong><br /> <strong>Position:<\/strong> Column<br /> <strong>Axis 1 :<\/strong> 0.501<br /> <strong>Axis 2 :<\/strong> -0.031<br /> <strong>Cosinus carré:<\/strong> 0.946<br /> <strong>Contribution:<\/strong> 18.863<br /> <strong>Effectif:<\/strong> 12675","<strong>development<\/strong><br /> <strong>Position:<\/strong> Column<br /> <strong>Axis 1 :<\/strong> -0.129<br /> <strong>Axis 2 :<\/strong> 0.273<br /> <strong>Cosinus carré:<\/strong> 0.619<br /> <strong>Contribution:<\/strong> 9.487<br /> <strong>Effectif:<\/strong> 11258","<strong>diversity<\/strong><br /> <strong>Position:<\/strong> Column<br /> <strong>Axis 1 :<\/strong> -0.34<br /> <strong>Axis 2 :<\/strong> -0.191<br /> <strong>Cosinus carré:<\/strong> 0.377<br /> <strong>Contribution:<\/strong> 3.423<br /> <strong>Effectif:<\/strong> 3276","<strong>economic<\/strong><br /> <strong>Position:<\/strong> Column<br /> <strong>Axis 1 :<\/strong> -0.126<br /> <strong>Axis 2 :<\/strong> 0.041<br /> <strong>Cosinus carré:<\/strong> 0.248<br /> <strong>Contribution:<\/strong> 0.287<br /> <strong>Effectif:<\/strong> 2600","<strong>economy<\/strong><br /> <strong>Position:<\/strong> Column<br /> <strong>Axis 1 :<\/strong> -0.213<br /> <strong>Axis 2 :<\/strong> -0.135<br /> <strong>Cosinus carré:<\/strong> 0.426<br /> <strong>Contribution:<\/strong> 1.449<br /> <strong>Effectif:<\/strong> 3224","<strong>education<\/strong><br /> <strong>Position:<\/strong> Column<br /> <strong>Axis 1 :<\/strong> -0.055<br /> <strong>Axis 2 :<\/strong> 0.026<br /> <strong>Cosinus carré:<\/strong> 0.022<br /> <strong>Contribution:<\/strong> 0.074<br /> <strong>Effectif:<\/strong> 3042","<strong>euro<\/strong><br /> <strong>Position:<\/strong> Column<br /> <strong>Axis 1 :<\/strong> -0.3<br /> <strong>Axis 2 :<\/strong> -0.22<br /> <strong>Cosinus carré:<\/strong> 0.52<br /> <strong>Contribution:<\/strong> 7.798<br /> <strong>Effectif:<\/strong> 7709","<strong>european<\/strong><br /> <strong>Position:<\/strong> Column<br /> <strong>Axis 1 :<\/strong> -0.218<br /> <strong>Axis 2 :<\/strong> -0.177<br /> <strong>Cosinus carré:<\/strong> 0.51<br /> <strong>Contribution:<\/strong> 4.951<br /> <strong>Effectif:<\/strong> 8359","<strong>fashion<\/strong><br /> <strong>Position:<\/strong> Column<br /> <strong>Axis 1 :<\/strong> 0.123<br /> <strong>Axis 2 :<\/strong> -0.353<br /> <strong>Cosinus carré:<\/strong> 0.217<br /> <strong>Contribution:<\/strong> 3.016<br /> <strong>Effectif:<\/strong> 2262","<strong>freedom<\/strong><br /> <strong>Position:<\/strong> Column<br /> <strong>Axis 1 :<\/strong> 0.016<br /> <strong>Axis 2 :<\/strong> 0.033<br /> <strong>Cosinus carré:<\/strong> 0.007<br /> <strong>Contribution:<\/strong> 0.069<br /> <strong>Effectif:<\/strong> 5590","<strong>good<\/strong><br /> <strong>Position:<\/strong> Column<br /> <strong>Axis 1 :<\/strong> 0.437<br /> <strong>Axis 2 :<\/strong> -0.107<br /> <strong>Cosinus carré:<\/strong> 0.793<br /> <strong>Contribution:<\/strong> 2.886<br /> <strong>Effectif:<\/strong> 2327","<strong>high<\/strong><br /> <strong>Position:<\/strong> Column<br /> <strong>Axis 1 :<\/strong> 0.271<br /> <strong>Axis 2 :<\/strong> -0.009<br /> <strong>Cosinus carré:<\/strong> 0.389<br /> <strong>Contribution:<\/strong> 1.678<br /> <strong>Effectif:<\/strong> 3874","<strong>history<\/strong><br /> <strong>Position:<\/strong> Column<br /> <strong>Axis 1 :<\/strong> -0.287<br /> <strong>Axis 2 :<\/strong> -0.167<br /> <strong>Cosinus carré:<\/strong> 0.49<br /> <strong>Contribution:<\/strong> 4.185<br /> <strong>Effectif:<\/strong> 5473","<strong>money<\/strong><br /> <strong>Position:<\/strong> Column<br /> <strong>Axis 1 :<\/strong> -0.111<br /> <strong>Axis 2 :<\/strong> -0.034<br /> <strong>Cosinus carré:<\/strong> 0.063<br /> <strong>Contribution:<\/strong> 0.185<br /> <strong>Effectif:<\/strong> 2197","<strong>old<\/strong><br /> <strong>Position:<\/strong> Column<br /> <strong>Axis 1 :<\/strong> -0.166<br /> <strong>Axis 2 :<\/strong> 0.043<br /> <strong>Cosinus carré:<\/strong> 0.226<br /> <strong>Contribution:<\/strong> 0.845<br /> <strong>Effectif:<\/strong> 4706","<strong>peace<\/strong><br /> <strong>Position:<\/strong> Column<br /> <strong>Axis 1 :<\/strong> -0.096<br /> <strong>Axis 2 :<\/strong> 0.046<br /> <strong>Cosinus carré:<\/strong> 0.06<br /> <strong>Contribution:<\/strong> 0.163<br /> <strong>Effectif:<\/strong> 2184","<strong>power<\/strong><br /> <strong>Position:<\/strong> Column<br /> <strong>Axis 1 :<\/strong> -0.218<br /> <strong>Axis 2 :<\/strong> 0.059<br /> <strong>Cosinus carré:<\/strong> 0.333<br /> <strong>Contribution:<\/strong> 1.352<br /> <strong>Effectif:<\/strong> 4290","<strong>racism<\/strong><br /> <strong>Position:<\/strong> Column<br /> <strong>Axis 1 :<\/strong> 0.105<br /> <strong>Axis 2 :<\/strong> 1.136<br /> <strong>Cosinus carré:<\/strong> 0.876<br /> <strong>Contribution:<\/strong> 45.536<br /> <strong>Effectif:<\/strong> 3510","<strong>rich<\/strong><br /> <strong>Position:<\/strong> Column<br /> <strong>Axis 1 :<\/strong> 0.554<br /> <strong>Axis 2 :<\/strong> 0.012<br /> <strong>Cosinus carré:<\/strong> 0.914<br /> <strong>Contribution:<\/strong> 13.479<br /> <strong>Effectif:<\/strong> 7475","<strong>romantic<\/strong><br /> <strong>Position:<\/strong> Column<br /> <strong>Axis 1 :<\/strong> 1.131<br /> <strong>Axis 2 :<\/strong> -0.44<br /> <strong>Cosinus carré:<\/strong> 0.805<br /> <strong>Contribution:<\/strong> 25.603<br /> <strong>Effectif:<\/strong> 2704","<strong>technology<\/strong><br /> <strong>Position:<\/strong> Column<br /> <strong>Axis 1 :<\/strong> 0.087<br /> <strong>Axis 2 :<\/strong> 0.281<br /> <strong>Cosinus carré:<\/strong> 0.365<br /> <strong>Contribution:<\/strong> 2.864<br /> <strong>Effectif:<\/strong> 3445","<strong>union<\/strong><br /> <strong>Position:<\/strong> Column<br /> <strong>Axis 1 :<\/strong> -0.277<br /> <strong>Axis 2 :<\/strong> -0.161<br /> <strong>Cosinus carré:<\/strong> 0.633<br /> <strong>Contribution:<\/strong> 10.384<br /> <strong>Effectif:<\/strong> 14625","<strong>unity<\/strong><br /> <strong>Position:<\/strong> Column<br /> <strong>Axis 1 :<\/strong> -0.3<br /> <strong>Axis 2 :<\/strong> -0.141<br /> <strong>Cosinus carré:<\/strong> 0.231<br /> <strong>Contribution:<\/strong> 1.719<br /> <strong>Effectif:<\/strong> 2366","<strong>wealth<\/strong><br /> <strong>Position:<\/strong> Column<br /> <strong>Axis 1 :<\/strong> -0.22<br /> <strong>Axis 2 :<\/strong> 0.304<br /> <strong>Cosinus carré:<\/strong> 0.306<br /> <strong>Contribution:<\/strong> 4.062<br /> <strong>Effectif:<\/strong> 3367","<strong>world<\/strong><br /> <strong>Position:<\/strong> Column<br /> <strong>Axis 1 :<\/strong> -0.045<br /> <strong>Axis 2 :<\/strong> 0.14<br /> <strong>Cosinus carré:<\/strong> 0.169<br /> <strong>Contribution:<\/strong> 0.936<br /> <strong>Effectif:<\/strong> 4472","<strong>G_State_BEL<\/strong><br /> <strong>Position:<\/strong> Row<br /> <strong>Axis 1 :<\/strong> -0.601<br /> <strong>Axis 2 :<\/strong> -0.343<br /> <strong>Cosinus carré:<\/strong> 0.488<br /> <strong>Contribution:<\/strong> 7.859<br /> <strong>Effectif:<\/strong> 733","<strong>G_State_BRA<\/strong><br /> <strong>Position:<\/strong> Row<br /> <strong>Axis 1 :<\/strong> -0.379<br /> <strong>Axis 2 :<\/strong> 0.081<br /> <strong>Cosinus carré:<\/strong> 0.239<br /> <strong>Contribution:<\/strong> 4.702<br /> <strong>Effectif:<\/strong> 1593","<strong>G_State_CHN<\/strong><br /> <strong>Position:<\/strong> Row<br /> <strong>Axis 1 :<\/strong> 1.442<br /> <strong>Axis 2 :<\/strong> -0.397<br /> <strong>Cosinus carré:<\/strong> 0.951<br /> <strong>Contribution:<\/strong> 66.094<br /> <strong>Effectif:<\/strong> 1474","<strong>G_State_CMR<\/strong><br /> <strong>Position:<\/strong> Row<br /> <strong>Axis 1 :<\/strong> 0.36<br /> <strong>Axis 2 :<\/strong> 0.751<br /> <strong>Cosinus carré:<\/strong> 0.766<br /> <strong>Contribution:<\/strong> 31.812<br /> <strong>Effectif:<\/strong> 1530","<strong>G_State_FRA<\/strong><br /> <strong>Position:<\/strong> Row<br /> <strong>Axis 1 :<\/strong> -0.551<br /> <strong>Axis 2 :<\/strong> -0.176<br /> <strong>Cosinus carré:<\/strong> 0.521<br /> <strong>Contribution:<\/strong> 6.807<br /> <strong>Effectif:<\/strong> 1000","<strong>G_State_HUN<\/strong><br /> <strong>Position:<\/strong> Row<br /> <strong>Axis 1 :<\/strong> -0.558<br /> <strong>Axis 2 :<\/strong> -0.213<br /> <strong>Cosinus carré:<\/strong> 0.401<br /> <strong>Contribution:<\/strong> 3.071<br /> <strong>Effectif:<\/strong> 414","<strong>G_State_IND<\/strong><br /> <strong>Position:<\/strong> Row<br /> <strong>Axis 1 :<\/strong> 0.554<br /> <strong>Axis 2 :<\/strong> -0.122<br /> <strong>Cosinus carré:<\/strong> 0.385<br /> <strong>Contribution:<\/strong> 5.769<br /> <strong>Effectif:<\/strong> 909","<strong>G_State_MDA<\/strong><br /> <strong>Position:<\/strong> Row<br /> <strong>Axis 1 :<\/strong> -0.244<br /> <strong>Axis 2 :<\/strong> 0.127<br /> <strong>Cosinus carré:<\/strong> 0.084<br /> <strong>Contribution:<\/strong> 0.602<br /> <strong>Effectif:<\/strong> 361","<strong>G_State_MLT<\/strong><br /> <strong>Position:<\/strong> Row<br /> <strong>Axis 1 :<\/strong> -0.235<br /> <strong>Axis 2 :<\/strong> -0.269<br /> <strong>Cosinus carré:<\/strong> 0.201<br /> <strong>Contribution:<\/strong> 0.899<br /> <strong>Effectif:<\/strong> 263","<strong>G_State_PRT<\/strong><br /> <strong>Position:<\/strong> Row<br /> <strong>Axis 1 :<\/strong> -0.512<br /> <strong>Axis 2 :<\/strong> -0.182<br /> <strong>Cosinus carré:<\/strong> 0.614<br /> <strong>Contribution:<\/strong> 5.504<br /> <strong>Effectif:<\/strong> 905","<strong>G_State_ROU<\/strong><br /> <strong>Position:<\/strong> Row<br /> <strong>Axis 1 :<\/strong> -0.573<br /> <strong>Axis 2 :<\/strong> -0.306<br /> <strong>Cosinus carré:<\/strong> 0.297<br /> <strong>Contribution:<\/strong> 5.784<br /> <strong>Effectif:<\/strong> 621","<strong>G_State_RUS<\/strong><br /> <strong>Position:<\/strong> Row<br /> <strong>Axis 1 :<\/strong> -0.284<br /> <strong>Axis 2 :<\/strong> -0.402<br /> <strong>Cosinus carré:<\/strong> 0.292<br /> <strong>Contribution:<\/strong> 8.709<br /> <strong>Effectif:<\/strong> 1284","<strong>G_State_SEN<\/strong><br /> <strong>Position:<\/strong> Row<br /> <strong>Axis 1 :<\/strong> -0.088<br /> <strong>Axis 2 :<\/strong> 1.423<br /> <strong>Cosinus carré:<\/strong> 0.796<br /> <strong>Contribution:<\/strong> 17.877<br /> <strong>Effectif:<\/strong> 271","<strong>G_State_TUN<\/strong><br /> <strong>Position:<\/strong> Row<br /> <strong>Axis 1 :<\/strong> -0.016<br /> <strong>Axis 2 :<\/strong> 0.921<br /> <strong>Cosinus carré:<\/strong> 0.603<br /> <strong>Contribution:<\/strong> 9.932<br /> <strong>Effectif:<\/strong> 360","<strong>G_State_TUR<\/strong><br /> <strong>Position:<\/strong> Row<br /> <strong>Axis 1 :<\/strong> 0.01<br /> <strong>Axis 2 :<\/strong> 0.134<br /> <strong>Cosinus carré:<\/strong> 0.035<br /> <strong>Contribution:<\/strong> 0.49<br /> <strong>Effectif:<\/strong> 839","<strong>G_Study_<\/strong><br /> <strong>Position:<\/strong> Row<br /> <strong>Axis 1 :<\/strong> -0.088<br /> <strong>Axis 2 :<\/strong> 1.423<br /> <strong>Cosinus carré:<\/strong> 0.796<br /> <strong>Contribution:<\/strong> 17.877<br /> <strong>Effectif:<\/strong> 271","<strong>G_Study_ART<\/strong><br /> <strong>Position:<\/strong> Row<br /> <strong>Axis 1 :<\/strong> -0.024<br /> <strong>Axis 2 :<\/strong> -0.084<br /> <strong>Cosinus carré:<\/strong> 0.152<br /> <strong>Contribution:<\/strong> 0.399<br /> <strong>Effectif:<\/strong> 1664","<strong>G_Study_BUS<\/strong><br /> <strong>Position:<\/strong> Row<br /> <strong>Axis 1 :<\/strong> -0.03<br /> <strong>Axis 2 :<\/strong> -0.078<br /> <strong>Cosinus carré:<\/strong> 0.249<br /> <strong>Contribution:<\/strong> 0.466<br /> <strong>Effectif:<\/strong> 2151","<strong>G_Study_ENG<\/strong><br /> <strong>Position:<\/strong> Row<br /> <strong>Axis 1 :<\/strong> -0.021<br /> <strong>Axis 2 :<\/strong> -0.084<br /> <strong>Cosinus carré:<\/strong> 0.199<br /> <strong>Contribution:<\/strong> 0.451<br /> <strong>Effectif:<\/strong> 1903","<strong>G_Study_HEA<\/strong><br /> <strong>Position:<\/strong> Row<br /> <strong>Axis 1 :<\/strong> 0.039<br /> <strong>Axis 2 :<\/strong> 0.033<br /> <strong>Cosinus carré:<\/strong> 0.069<br /> <strong>Contribution:<\/strong> 0.123<br /> <strong>Effectif:<\/strong> 1883","<strong>G_Study_POL<\/strong><br /> <strong>Position:<\/strong> Row<br /> <strong>Axis 1 :<\/strong> 0.051<br /> <strong>Axis 2 :<\/strong> -0.001<br /> <strong>Cosinus carré:<\/strong> 0.073<br /> <strong>Contribution:<\/strong> 0.1<br /> <strong>Effectif:<\/strong> 1981","<strong>G_Study_SHS<\/strong><br /> <strong>Position:<\/strong> Row<br /> <strong>Axis 1 :<\/strong> -0.002<br /> <strong>Axis 2 :<\/strong> 0.008<br /> <strong>Cosinus carré:<\/strong> 0.002<br /> <strong>Contribution:<\/strong> 0.005<br /> <strong>Effectif:<\/strong> 2704","<strong>A1_Gender_F<\/strong><br /> <strong>Position:<\/strong> Row<br /> <strong>Axis 1 :<\/strong> 0.038<br /> <strong>Axis 2 :<\/strong> -0.058<br /> <strong>Cosinus carré:<\/strong> 0.319<br /> <strong>Contribution:<\/strong> 0.861<br /> <strong>Effectif:<\/strong> 6239","<strong>A1_Gender_M<\/strong><br /> <strong>Position:<\/strong> Row<br /> <strong>Axis 1 :<\/strong> -0.038<br /> <strong>Axis 2 :<\/strong> 0.058<br /> <strong>Cosinus carré:<\/strong> 0.319<br /> <strong>Contribution:<\/strong> 0.85<br /> <strong>Effectif:<\/strong> 6318","<strong>VecuEtrang_Vecu_etra_N<\/strong><br /> <strong>Position:<\/strong> Row<br /> <strong>Axis 1 :<\/strong> 0.04<br /> <strong>Axis 2 :<\/strong> -0.004<br /> <strong>Cosinus carré:<\/strong> 0.783<br /> <strong>Contribution:<\/strong> 0.341<br /> <strong>Effectif:<\/strong> 11107","<strong>VecuEtrang_Vecu_etra_O<\/strong><br /> <strong>Position:<\/strong> Row<br /> <strong>Axis 1 :<\/strong> -0.304<br /> <strong>Axis 2 :<\/strong> 0.034<br /> <strong>Cosinus carré:<\/strong> 0.783<br /> <strong>Contribution:<\/strong> 2.616<br /> <strong>Effectif:<\/strong> 1450"],"tooltip_position_x":"right","tooltip_position_y":"bottom","has_custom_tooltips":true,"click_callback":null,"init_callback":null,"zoom_callback":null,"zoom_on":null,"zoom_on_level":null,"disable_wheel":false,"fixed":true,"legend_width":150,"left_margin":30,"html_id":"scatterD3-TVGRQTLM","xlim":[-1.01,1.85],"ylim":[-0.939,1.92],"x_categorical":false,"y_categorical":false,"x_levels":null,"y_levels":null,"menu":true,"lasso":false,"lasso_callback":null,"dom_id_reset_zoom":"scatterD3-reset-zoom","dom_id_svg_export":null,"dom_id_lasso_toggle":null,"transitions":true,"axes_font_size":"100%","legend_font_size":"100%","caption":null,"lines":{"slope":[0,null],"intercept":[0,0],"stroke_dasharray":[5,5]},"hashes":{"x":"ab5b81f9f29dac0e722417788d3aec34d1cdb217726811d8da1b762c076dae57","y":"9e29633bb16c9573888027405b6128b4cbbc04d5b80855b69489c224c193140e","lab":"e35e6101283a6cf7a49101737aa0e19c43b5418ceb4882acdbe611409e7189cd","key_var":"95f717382c41175168719d174f14ade1992334df2e7d42075f9f102ab77ff778","col_var":"881f7aab8c7230137caa869b0b58d3a7c4d270923954020a9762811af6f63122","symbol_var":"213aff532699b478e5bde255ce5a81dfcd8e84c1fe59733a39b3c2ce5fedb967","size_var":"71557d1c8bac9bbe3cbec8d00bb223a2f372279827064095447e569fbf5a760a","ellipses_data":"28df520b992b4a4bead0a7a527ee2f4fc64fbcc2892ab364f676113761cbeefc","opacity_var":"71557d1c8bac9bbe3cbec8d00bb223a2f372279827064095447e569fbf5a760a","lines":"f84bf8f8ee4b4297d647ec13b5d4362c022c90688f8d9efa8b45e3c4bef3e7fa","labels_positions":"71557d1c8bac9bbe3cbec8d00bb223a2f372279827064095447e569fbf5a760a"}}},"evals":[],"jsHooks":[]}</script>
+<p>Les résultats de l’analyse factorielle (plans factoriels, contributions axes par axes) s’affichent dans une fenêtre interactive à l’exécution de la commande <code>explor()</code>. Les valeurs des <em>contributions</em> axes par axes permettent de déterminer les modalités des variables qui différencient le plus les champs lexicaux des réponses. Le signe - ou + des valeurs des <em>coordonnées</em> permettent de repérer les oppositions.</p>
+Exemple d’affichage des contributions :
+<center>
+<img src="images/im_TLA_contrib_axe1.png" height="400px" />
+</center>
+<div id="aides-à-linterprétation" class="section level3">
+<h3>Aides à l’interprétation</h3>
+<p>On affiche les titres qui sont aux extrémités des axes (coordonnées les plus grandes sur les axes 1 et 2)</p>
+<div class="sourceCode" id="cb46"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="fu">extreme_docs</span>(corpus, resTLA, <span class="dv">1</span> , <span class="at">ndocs=</span><span class="dv">5</span>)</span></code></pre></div>
+<pre><code>## Most extreme documents on the positive side of axis 1:
+## X233 
+## romantic pretty relaxed  
+## X250 
+## pretty romantic mysterious  
+## X269 
+## romantic mean and ferocious   
+## X280 
+## romantic arts   
+## X283 
+## romantic leisure elegant fairy 
+## 
+## 
+##  Most extreme documents on the negative side of axis 1:</code></pre>
+<div class="sourceCode" id="cb48"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="fu">extreme_docs</span>(corpus, resTLA, <span class="dv">2</span> , <span class="at">ndocs=</span><span class="dv">5</span>)</span></code></pre></div>
+<pre><code>## Most extreme documents on the positive side of axis 2:
+## X485 
+## colonization scientific progress racism  
+## X498 
+## modernity industry racism  
+## X505 
+## colonisators racism egoism struggle people invading
+## X509 
+## exclusion racism arrogant  
+## X512 
+## eldorado racism colonialism exploited mercenaires
+## 
+## 
+##  Most extreme documents on the negative side of axis 2:</code></pre>
+</div>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3,h4",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

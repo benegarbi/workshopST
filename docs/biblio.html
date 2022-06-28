@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="B. Garnier (Ined)" />
+
+
+<title>Formation Statistique textuelle-Bibliographie</title>
+
+<script src="site_libs/header-attrs-2.14/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cerulean.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.tab('show');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-inverse  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Formation statistique textuelle</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Acceuil</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Supports
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="Statistique_textuelle_presentation.html">Présentation générale</a>
+    </li>
+    <li>
+      <a href="RTemis_EBM_tt.html">Pas-à-pas sur textes courts</a>
+    </li>
+    <li>
+      <a href="RTemis_EBM_tt.html">Pas-à-pas sur textes longs</a>
+    </li>
+  </ul>
+</li>
+<li>
+  <a href="exercices.html">Exercices</a>
+</li>
+<li>
+  <a href="biblio.html">Ressources</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Formation Statistique textuelle-Bibliographie</h1>
+<h4 class="author">B. Garnier (Ined)</h4>
+<h4 class="date">29/06/2022</h4>
+
+</div>
+
+
+<div id="méthodes" class="section level1">
+<h1>Méthodes</h1>
+<ul>
+<li>Bécue-Bertaut M., Morin A., Murtagh F., 2018, Analyse Textuelle avec R, Presses Universitaires de Rennes (Pratique De La Statistique), 190 p.</li>
+<li>Benzécri, J. P., 1984 – Description des textes et analyse documentaire, Cahiers de l’analyse des données, Tome 9,no. 2, p. 205-211 <a href="http://www.numdam.org/item?id=CAD_1984__9_2_205_0" class="uri">http://www.numdam.org/item?id=CAD_1984__9_2_205_0</a></li>
+<li>Benzécri J.-P., 1973 – L’analyse des Données (tome 1 et 2). Dunod, Paris</li>
+<li>Garnier B., Guérin-Pace F., 2010 - Appliquer les méthodes de la statistique textuelle, Ceped, les clefs pour, Paris <a href="http://www.ceped.org/fr/publications-ressources/editions-du-ceped-1988-2012/les-clefs-pour/article/appliquer-les-methodes-de-la" class="uri">http://www.ceped.org/fr/publications-ressources/editions-du-ceped-1988-2012/les-clefs-pour/article/appliquer-les-methodes-de-la</a></li>
+<li>Guérin-Pace F. 1997. La statistique textuelle : un outil exploratoire en sciences sociales. In: Population, (4), Ined. pp. 865-887 es. Ined. Paris, 291p</li>
+<li>Lebart L., Salem A. 1994. Statistique textuelle. Paris, Dunod, 342 p. <a href="http://www.dtmvic.com/" class="uri">http://www.dtmvic.com/</a></li>
+<li>Lebart L., Pincemin B., Poudat C.,2020. Analyse des données textuelles, Mesure et évaluation, Presses de l’Université du Québec</li>
+<li>Lejeune, C. 2017. Analyser les contenus, les discours ou les vécus ? À chaque méthode ses logiciels ! in Santiago-Delefosse M. et del Rio Carral M. Les méthodes qualitatives en psychologie et sciences humaines de la santé, Dunod, Psycho Sup</li>
+<li>Lejeune, C. 2019. Manuel d’analyse qualitative, Analyser sans compter ni classer. 2e édition, 160 p.</li>
+<li>Tufféry S. Data Mining et Statistique décisionnelle. (4e Ed) Technip</li>
+<li>Reinert M. 1983, Une méthode de classification descendante hiérarchique : Application à l’analyse lexicale par contexte. Cahiers de l’Analyse des Données, 3, pp. 187-198</li>
+</ul>
+</div>
+<div id="articles-applications" class="section level1">
+<h1>Articles (applications)</h1>
+<ul>
+<li>Abrial, S, Brugidou, M., Salomon, A.-C. 2017. Types idéologiques et classe résiduelle dans l’enquête d’Etienne Schweisguth : Les Français et la politique, 1982-1988. Réanalyse à partir de deux familles de logiciels, CAQDAS et ADT. Recherches Qualitatives, ARQ Association pour la Recherche Qualitative, La réanalyse des enquêtes qualitatives à l’épreuve de l’expérimentation, pp.29-53. ⟨halshs-01545814⟩</li>
+<li>Bastin G., Bouchet-Valat M. 2014. Media corpora, text mining, and the sociological imagination – A free software text mining approach to the framing of Julian Assange by three news agencies using R.TeMiS. Bulletin de Méthodologie Sociologique, 121 (1), p. 5-25.</li>
+<li>Baril E., Guérin-Pace F. 2016, Compétences à l’écrit des adultes et événements marquants de l’enfance : le traitement de l’enquête Information et vie quotidienne à l’aide des méthodes de la statistique textuelle, Economie et statistique, N° 490</li>
+<li>Beaudouin V. 2019, Comment s’élabore la mémoire collective sur le web? Une analyse qualitative et quantitative des pratiques d’écriture en ligne de la mémoire de la Grande Guerre, Réseaux, vol. 37, n°214-215, p. 141-169. <a href="https://cv.archives-ouvertes.fr/valerie-beaudouin" class="uri">https://cv.archives-ouvertes.fr/valerie-beaudouin</a></li>
+<li>Bonvalet C., Gotman A., Grafmeyer Y., Bertaux-Wiame I., Le Bras H., Maison D.1999. La famille et ses proches : l’aménagement des territoires, Travaux et documents N°143, Ined</li>
+<li>Brennetot A., Emsellem K., Guérin-Pace F., Garnier B. 2013. Dire l’Europe à travers le monde.Les mots des étudiants dans l’enquête EuroBroadMap, Cybergéo <a href="http://cybergeo.revues.org/25684" class="uri">http://cybergeo.revues.org/25684</a></li>
+<li>Brugidou M., « Le Grenelle de l’environnement : corpus et dispositif d’écriture. » Corpus, 2011, 1 (10), pp.155-178.</li>
+<li>Collomb Ph., Guérin-Pace F. 1998. Les contours du mot « environnement » : enseignements de la statistique textuelle. L’espace géographique. 41 (1)</li>
+<li>Courgeau D., Guérin-Pace F. 1998. Le suivi des itinéraires professionnels des couples par les méthodes de la statistique textuelle. In: JADT 1998 : 4èmes journées internationales d’analyse statistique des données textuelles. p. 221-232.</li>
+<li>Guérin-Pace F., Saint-Julien T., 2012 - Les mots de L’Espace Géographique. Une analyse lexicale des titres et mots-clés de 1972 à 2010. L’espace géographique. 41 (1)</li>
+<li>Labbé C., Labbé D. 1994. Que mesure la spécificité du vocabulaire ? Grenoble, CERAT, décembre 1994 et juin 1997. Reproduit dans Lexicometrica, 3, 2001.</li>
+<li>Labbé C., Labbé D. 2005. How to measure the meanings of words ? Amour in Corneille’s work. Language Resources Evaluation. 39, p. 335-351.</li>
+<li>Labbé C., Labbé D. Le sens des mots : l’Europe dans le vocabulaire de Jacques Chirac, <a href="https://halshs.archives-ouvertes.fr/halshs-02299918v3" class="uri">https://halshs.archives-ouvertes.fr/halshs-02299918v3</a></li>
+<li>Marpsat, M. 2010. Écrire la rue : de la survie physique à la résistance au stigmate. Une analyse textuelle et thématique du journal d’Albert Vanderburg, sans domicile et auteur de blog, Sociologie [En ligne], N°1, vol. 1, <a href="https://sociologie.revues.org/130" class="uri">https://sociologie.revues.org/130</a></li>
+<li>Parasie, S. &amp; Cointet, J. 2012. La presse en ligne au service de la démocratie locale: Une analyse morphologique de forums politiques. Revue française de science politique, vol. 62(1), 45-70. <a href="https://doi.org/10.3917/rfsp.621.0045" class="uri">https://doi.org/10.3917/rfsp.621.0045</a></li>
+<li>Saint Léger de, M., Comment ont évolué les thématiques des 99 premiers numéros de BMS ?, Bulletin de méthodologie sociologique [En ligne], 100 | 2008, mis en ligne le 01 octobre 2011, <a href="http://journals.openedition.org/bms/3153" class="uri">http://journals.openedition.org/bms/3153</a></li>
+<li>Vautier, C. (dir.) 2015. Nouvelles perspectives en sciences sociales : revue internationale de systémique complexe et d’études relationnelles. Volume 11, numéro 1, l’analyse de données textuelles informatisée, Prise de parole, p. 15-461</li>
+</ul>
+</div>
+<div id="sites-ressources" class="section level1">
+<h1>Sites ressources</h1>
+<ul>
+<li>Actes des Journées d’Analyse des Données Textuelles : <a href="http://lexicometrica.univ-paris3.fr/" class="uri">http://lexicometrica.univ-paris3.fr/</a></li>
+<li>Webinaires du réseau Mate SHS : <a href="http://mate-shs.cnrs.fr/?les-tutos-mate" class="uri">http://mate-shs.cnrs.fr/?les-tutos-mate</a></li>
+<li>Projet Textometrie : <a href="http://textometrie.ens-lyon.fr/" class="uri">http://textometrie.ens-lyon.fr/</a></li>
+<li>Cours de Ricco Rakotomalala : <a href="http://eric.univ-lyon2.fr/~ricco/cours/cours_text_mining.html#slides" class="uri">http://eric.univ-lyon2.fr/~ricco/cours/cours_text_mining.html#slides</a></li>
+<li>Analyse critique des outils par J. Jenny : <a href="http://jacquesjenny.com/legs-sociologique/" class="uri">http://jacquesjenny.com/legs-sociologique/</a></li>
+</ul>
+</div>
+<div id="outils" class="section level1">
+<h1>Outils</h1>
+<ul>
+<li>Package R.temis : <a href="http://rtemis.hypotheses.org/" class="uri">http://rtemis.hypotheses.org/</a></li>
+<li>Package quanteda : <a href="https://quanteda.io/reference/quanteda-package.html" class="uri">https://quanteda.io/reference/quanteda-package.html</a></li>
+<li>Pakage Rainette (Classification <em>Alceste</em>) : <a href="https://juba.github.io/rainette/index.html" class="uri">https://juba.github.io/rainette/index.html</a></li>
+<li>Package Xplortext : <a href="http://www.xplortext.org/" class="uri">http://www.xplortext.org/</a></li>
+<li>IRaMuTeQ : <a href="http://www.iramuteq.org/" class="uri">http://www.iramuteq.org/</a></li>
+<li>Voyant-Tools, environnement en ligne de lecture et d’analyse de textes numériques : <a href="https://voyant-tools.org/" class="uri">https://voyant-tools.org/</a></li>
+</ul>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3,h4",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
